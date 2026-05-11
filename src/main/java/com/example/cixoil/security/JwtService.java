@@ -1,5 +1,6 @@
 package com.example.cixoil.security;
 
+import com.example.cixoil.dto.AuthUserDTO;
 import com.example.cixoil.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -31,25 +32,24 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(User user) {
-        if (user.getRole() == null) {
+    public String generateAccessToken(AuthUserDTO authUserDTO) {
+        if (authUserDTO.role() == null) {
             throw new IllegalStateException("El usuario no tiene ningún rol asignado");
         }
 
         return Jwts.builder()
-                .setSubject(String.valueOf(user.getId()))
-                .claim("username", user.getUsername())
-                .claim("email", user.getEmail())
-                .claim("role", user.getRole().getName())
+                .setSubject(String.valueOf(authUserDTO.id()))
+                .claim("username", authUserDTO.username())
+                .claim("role", authUserDTO.role())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateRefreshToken(User user) {
+    public String generateRefreshToken(AuthUserDTO authUserDTO) {
         return Jwts.builder()
-                .setSubject(String.valueOf(user.getId()))
+                .setSubject(String.valueOf(authUserDTO.id()))
                 .claim("type", "refresh")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
@@ -65,6 +65,7 @@ public class JwtService {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new IllegalArgumentException("Token JWT inválido");
         }
     }
@@ -86,8 +87,8 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    public boolean isAccessTokenValid(String token, User user) {
-        return extractUserId(token).equals(String.valueOf(user.getId()))
+    public boolean isAccessTokenValid(String token, AuthUserDTO authUserDTO) {
+        return extractUserId(token).equals(String.valueOf(authUserDTO.id()))
                 && !isTokenExpired(token);
     }
 
@@ -95,9 +96,9 @@ public class JwtService {
         return "refresh".equals(extractClaim(token, c -> c.get("type")));
     }
 
-    public boolean isRefreshTokenValid(String token, User user) {
+    public boolean isRefreshTokenValid(String token, AuthUserDTO authUserDTO) {
         return isRefreshToken(token)
-                && extractUserId(token).equals(String.valueOf(user.getId()))
+                && extractUserId(token).equals(String.valueOf(authUserDTO.id()))
                 && !isTokenExpired(token);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.cixoil.service;
 
+import com.example.cixoil.dto.AuthUserDTO;
 import com.example.cixoil.dto.UserDTO;
 import com.example.cixoil.dto.UserSaveDTO;
 import com.example.cixoil.enums.Status;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -38,8 +40,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getEntityById(Long id) {
-        return userRepository.findById(id);
+    public Optional<AuthUserDTO> getAuthDTOById(Long id) {
+        return userRepository.findById(id).map(userMapper::toAuthUserDTO);
     }
 
     @Transactional(readOnly = true)
@@ -98,7 +100,7 @@ public class UserService {
         User existent = requireUserById(id);
 
         existent.setStatus(
-                existent.getStatus() == Status.ACTIVE.getValue() ?
+                !Objects.equals(existent.getStatus(), Status.ACTIVE.getValue()) ?
                         Status.INACTIVE.getValue() :
                         Status.ACTIVE.getValue()
         );

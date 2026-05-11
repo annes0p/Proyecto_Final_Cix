@@ -1,10 +1,12 @@
 package com.example.cixoil.controller;
 
+import com.example.cixoil.dto.AuthUserDTO;
 import com.example.cixoil.dto.UserDTO;
 import com.example.cixoil.service.UserService;
 import com.example.cixoil.utils.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,11 @@ public class UserController {
     public ResponseEntity<?> listActiveUsers() {
         List<UserDTO> data = userService.findActives();
         return ResponseUtil.ok("Usuarios obtenidos correctamente", data);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me(@AuthenticationPrincipal AuthUserDTO authUserDTO){
+        return ResponseUtil.ok("Datos propios encontrados exitosamente", authUserDTO);
     }
 
     @GetMapping("/{id}")

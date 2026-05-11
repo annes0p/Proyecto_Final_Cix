@@ -10,6 +10,8 @@ import com.example.cixoil.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -24,11 +26,14 @@ public class AuthService {
         if (!userService.validatePassword(request.password(), user.getPassword()))
             throw new WrongPasswordException("Contraseña incorrecta");
 
-        if (user.getStatus() != Status.ACTIVE.getValue())
-            throw new ResourceDisabledException("Credenciales inválidas");
+        if (!Objects.equals(user.getStatus(), Status.ACTIVE.getValue()))
+            throw new ResourceDisabledException("Usuario inactivo");
+        //TODO: Cambiar los mensajes de error para evitar vulnerabilidades
 
-        String accessToken = jwtService.generateAccessToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        AuthUserDTO authUserDTO = userMapper.toAuthUserDTO(user);
+
+        String accessToken = jwtService.generateAccessToken(authUserDTO);
+        String refreshToken = jwtService.generateRefreshToken(authUserDTO);
 
         return new LoginResponseDTO(
                 new AuthDTO(
@@ -37,7 +42,24 @@ public class AuthService {
                         "Bearer",
                         jwtService.getExpiration()
                 ),
-                userMapper.toAuthUserDTO(user)
+                authUserDTO
+        );
+    }
+
+    public RefreshTokenResponseDTO refresh(RefreshTokenRequestDTO request) {
+        String refreshToken = request.refreshToken();
+
+        String userId = jwtService.extractUserId(refreshToken);
+
+        AuthUserDTO authUserDTO = userService.getAuthDTOById(Long.valueOf(userId)).orElseThrow();
+
+        if (!jwtService.isRefreshTokenValid(refreshToken, authUserDTO))
+            throw new IllegalArgumentException("Refresh token inválido");
+
+        return new RefreshTokenResponseDTO(
+                jwtService.generateAccessToken(authUserDTO),
+                "Bearer",
+                jwtService.getExpiration()
         );
     }
 }
