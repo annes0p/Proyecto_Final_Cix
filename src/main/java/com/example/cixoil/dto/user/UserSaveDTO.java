@@ -1,4 +1,4 @@
-package com.example.cixoil.dto;
+package com.example.cixoil.dto.user;
 
 public record UserSaveDTO(
         Long id,

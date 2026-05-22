@@ -1,4 +1,4 @@
-package com.example.cixoil.dto;
+package com.example.cixoil.dto.auth;
 
 public record AuthUserDTO(
         Long id,

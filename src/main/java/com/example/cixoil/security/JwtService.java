@@ -1,7 +1,6 @@
 package com.example.cixoil.security;
 
-import com.example.cixoil.dto.AuthUserDTO;
-import com.example.cixoil.model.User;
+import com.example.cixoil.dto.auth.AuthUserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

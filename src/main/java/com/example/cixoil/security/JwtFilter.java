@@ -1,6 +1,6 @@
 package com.example.cixoil.security;
 
-import com.example.cixoil.dto.AuthUserDTO;
+import com.example.cixoil.dto.auth.AuthUserDTO;
 import com.example.cixoil.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,9 +1,9 @@
 package com.example.cixoil.controller;
 
-import com.example.cixoil.dto.LoginRequestDTO;
-import com.example.cixoil.dto.LoginResponseDTO;
-import com.example.cixoil.dto.RefreshTokenRequestDTO;
-import com.example.cixoil.dto.RefreshTokenResponseDTO;
+import com.example.cixoil.dto.auth.LoginRequestDTO;
+import com.example.cixoil.dto.auth.LoginResponseDTO;
+import com.example.cixoil.dto.auth.RefreshTokenRequestDTO;
+import com.example.cixoil.dto.auth.RefreshTokenResponseDTO;
 import com.example.cixoil.service.AuthService;
 import com.example.cixoil.utils.ResponseUtil;
 import lombok.RequiredArgsConstructor;

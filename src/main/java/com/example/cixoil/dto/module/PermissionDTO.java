@@ -1,4 +1,4 @@
-package com.example.cixoil.dto;
+package com.example.cixoil.dto.module;
 
 import java.util.List;
 

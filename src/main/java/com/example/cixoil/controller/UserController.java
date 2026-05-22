@@ -1,7 +1,7 @@
 package com.example.cixoil.controller;
 
-import com.example.cixoil.dto.AuthUserDTO;
-import com.example.cixoil.dto.UserDTO;
+import com.example.cixoil.dto.auth.AuthUserDTO;
+import com.example.cixoil.dto.user.UserDTO;
 import com.example.cixoil.service.UserService;
 import com.example.cixoil.utils.ResponseUtil;
 import lombok.RequiredArgsConstructor;

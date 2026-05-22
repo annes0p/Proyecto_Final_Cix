@@ -1,6 +1,6 @@
 package com.example.cixoil.service;
 
-import com.example.cixoil.dto.*;
+import com.example.cixoil.dto.auth.*;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.exception.ResourceDisabledException;
 import com.example.cixoil.exception.WrongPasswordException;

@@ -1,7 +1,7 @@
 package com.example.cixoil.mapper;
 
-import com.example.cixoil.dto.AuthUserDTO;
-import com.example.cixoil.dto.UserDTO;
+import com.example.cixoil.dto.auth.AuthUserDTO;
+import com.example.cixoil.dto.user.UserDTO;
 import com.example.cixoil.model.Role;
 import com.example.cixoil.model.User;
 import org.mapstruct.Mapper;

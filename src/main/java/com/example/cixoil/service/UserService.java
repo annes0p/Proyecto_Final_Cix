@@ -1,8 +1,8 @@
 package com.example.cixoil.service;
 
-import com.example.cixoil.dto.AuthUserDTO;
-import com.example.cixoil.dto.UserDTO;
-import com.example.cixoil.dto.UserSaveDTO;
+import com.example.cixoil.dto.auth.AuthUserDTO;
+import com.example.cixoil.dto.user.UserDTO;
+import com.example.cixoil.dto.user.UserSaveDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.UserMapper;
