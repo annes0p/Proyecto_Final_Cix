@@ -31,7 +31,7 @@ public class User {
     @Column(name = "status")
     private Integer status = Status.ACTIVE.getValue();
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_role")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
 }
