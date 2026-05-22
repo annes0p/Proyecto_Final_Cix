@@ -44,11 +44,19 @@ public class Client {
     @Column(name = "email")
     private String email;
 
+    @JoinColumn(name = "id_location")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Location location;
+
     @Column(name = "address")
     private String address;
 
     @Column(name = "status")
     private Integer status = Status.ACTIVE.getValue();
+
+    @Builder.Default
+    @Column(name = "is_trusted", nullable = false)
+    private boolean isTrusted = false;
 
     @CreationTimestamp
     @Column(updatable = false)

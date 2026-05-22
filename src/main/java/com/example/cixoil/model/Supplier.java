@@ -25,6 +25,7 @@ public class Supplier {
     @Column(name = "legal_name", nullable = false)
     private String legalName;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "document_type")
     private DocumentType documentType = DocumentType.RUC;

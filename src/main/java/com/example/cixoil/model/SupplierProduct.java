@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@Table(name = "route")
+@Table(name = "supplier_product")
 public class SupplierProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
