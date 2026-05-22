@@ -4,6 +4,8 @@ import com.example.cixoil.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,4 +36,12 @@ public class User {
     @JoinColumn(name = "id_role")
     @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
+
+    @Column(name = "created_at") // Añadir fecha a los registros ya creados y luego poner null y no update
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
 }
