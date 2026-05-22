@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,11 +32,12 @@ public class Role {
     @Column(name = "status", nullable = false)
     private Integer status = Status.ACTIVE.getValue();
 
+    @Builder.Default
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "role_module",
             joinColumns = @JoinColumn(name = "id_role"),
             inverseJoinColumns = @JoinColumn(name = "id_module"))
     @JsonIgnoreProperties("role")
-    private List<Module> modules = new LinkedList<>();
+    private List<Module> modules = new ArrayList<>();
 }

@@ -3,6 +3,7 @@ package com.example.cixoil.model;
 import com.example.cixoil.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -37,13 +38,9 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
 
-    @Column(name = "created_at") // Añadir fecha a los registros ya creados y luego poner null y no update
+    @CreationTimestamp
+    @Column(
+//            updatable = false
+    )
     private LocalDateTime createdAt;
-
-    @PrePersist
-    public void prePersist() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-    }
 }
