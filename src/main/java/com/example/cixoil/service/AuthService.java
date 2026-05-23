@@ -2,6 +2,7 @@ package com.example.cixoil.service;
 
 import com.example.cixoil.dto.auth.*;
 import com.example.cixoil.enums.Status;
+import com.example.cixoil.exception.InvalidArgumentException;
 import com.example.cixoil.exception.ResourceDisabledException;
 import com.example.cixoil.exception.WrongPasswordException;
 import com.example.cixoil.mapper.UserMapper;
@@ -54,7 +55,7 @@ public class AuthService {
         AuthUserDTO authUserDTO = userService.getAuthDTOById(Long.valueOf(userId)).orElseThrow();
 
         if (!jwtService.isRefreshTokenValid(refreshToken, authUserDTO))
-            throw new IllegalArgumentException("Refresh token inválido");
+            throw new InvalidArgumentException("Refresh token inválido");
 
         return new RefreshTokenResponseDTO(
                 jwtService.generateAccessToken(authUserDTO),

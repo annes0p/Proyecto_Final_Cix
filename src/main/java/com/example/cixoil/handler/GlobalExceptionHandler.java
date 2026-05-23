@@ -1,10 +1,7 @@
 package com.example.cixoil.handler;
 
 import com.example.cixoil.dto.ApiResponseDTO;
-import com.example.cixoil.exception.BusinessException;
-import com.example.cixoil.exception.ResourceDisabledException;
-import com.example.cixoil.exception.ResourceNotFoundException;
-import com.example.cixoil.exception.WrongPasswordException;
+import com.example.cixoil.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +30,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<?> handleBusinessException(BusinessException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponseDTO<>(false, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(InvalidArgumentException.class)
+    public ResponseEntity<?> handleInvalidArgumentException(InvalidArgumentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponseDTO<>(false, e.getMessage(), null));
     }

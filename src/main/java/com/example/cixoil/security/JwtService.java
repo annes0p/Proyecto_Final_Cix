@@ -1,6 +1,7 @@
 package com.example.cixoil.security;
 
 import com.example.cixoil.dto.auth.AuthUserDTO;
+import com.example.cixoil.exception.InvalidArgumentException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -65,7 +66,7 @@ public class JwtService {
                     .getBody();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new IllegalArgumentException("Token JWT inválido");
+            throw new InvalidArgumentException("Token JWT inválido");
         }
     }
 

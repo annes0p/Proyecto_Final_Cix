@@ -141,11 +141,6 @@ public class UserService {
         return passwordEncoder.matches(password, encryptedPassword);
     }
 
-    private void validateId(Long id) {
-        if (id == null) throw new IllegalArgumentException("ID de usuario es null");
-        if (id <= 0) throw new IllegalArgumentException("ID de usuario inválido");
-    }
-
     private boolean isPasswordBlank(String password) {
         return password == null || password.trim().isEmpty();
     }
