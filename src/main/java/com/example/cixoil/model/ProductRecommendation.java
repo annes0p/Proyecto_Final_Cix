@@ -3,9 +3,6 @@ package com.example.cixoil.model;
 import com.example.cixoil.enums.Priority;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -14,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "product_recommendation")
-public class ProductRecommendation {
+public class ProductRecommendation extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_product_recommendation")
@@ -39,7 +36,7 @@ public class ProductRecommendation {
     @Column(name = "priority")
     private Priority priority;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+//    @CreationTimestamp
+//    @Column(updatable = false)
+//    private LocalDateTime createdAt;
 }

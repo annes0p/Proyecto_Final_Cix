@@ -4,10 +4,6 @@ import com.example.cixoil.enums.DocumentType;
 import com.example.cixoil.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -16,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "supplier")
-public class Supplier {
+public class Supplier extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_supplier")
@@ -45,10 +41,10 @@ public class Supplier {
     @Column(name = "status")
     private Integer status = Status.ACTIVE.getValue();
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+//    @CreationTimestamp
+//    @Column(updatable = false)
+//    private LocalDateTime createdAt;
+//
+//    @UpdateTimestamp
+//    private LocalDateTime updatedAt;
 }

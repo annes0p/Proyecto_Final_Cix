@@ -3,7 +3,6 @@ package com.example.cixoil.model;
 import com.example.cixoil.enums.StockMovementType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "stock_movement")
-public class StockMovement {
+public class StockMovement extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_stock_movement")
@@ -37,7 +36,6 @@ public class StockMovement {
     @Column(name = "movement_type")
     private StockMovementType stockMovementType;
 
-    @CreationTimestamp
-    @Column(name = "movement_date", updatable = false)
+    @Column(name = "movement_date")
     private LocalDateTime movementDate;
 }

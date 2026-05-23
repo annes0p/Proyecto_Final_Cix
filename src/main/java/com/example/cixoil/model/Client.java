@@ -4,10 +4,6 @@ import com.example.cixoil.enums.DocumentType;
 import com.example.cixoil.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -16,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "client")
-public class Client {
+public class Client extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_client")
@@ -58,10 +54,10 @@ public class Client {
     @Column(name = "is_trusted", nullable = false)
     private boolean isTrusted = false;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+//    @CreationTimestamp
+//    @Column(updatable = false)
+//    private LocalDateTime createdAt;
+//
+//    @UpdateTimestamp
+//    private LocalDateTime updatedAt;
 }

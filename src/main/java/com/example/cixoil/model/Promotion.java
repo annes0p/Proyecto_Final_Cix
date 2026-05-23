@@ -3,9 +3,6 @@ package com.example.cixoil.model;
 import com.example.cixoil.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -14,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "promotion")
-public class Promotion {
+public class Promotion extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_promotion")
@@ -58,7 +55,7 @@ public class Promotion {
     @Column(name = "auto_activate")
     private Boolean autoActivate = true;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+//    @CreationTimestamp
+//    @Column(updatable = false)
+//    private LocalDateTime createdAt;
 }

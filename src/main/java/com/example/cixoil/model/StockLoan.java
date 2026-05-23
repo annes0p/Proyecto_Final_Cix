@@ -3,10 +3,6 @@ package com.example.cixoil.model;
 import com.example.cixoil.enums.LoanStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -15,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "stock_loan")
-public class StockLoan {
+public class StockLoan extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_stock_loan")
@@ -39,10 +35,10 @@ public class StockLoan {
     @Column(name = "loan_status")
     private LoanStatus loanStatus;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+//    @CreationTimestamp
+//    @Column(updatable = false)
+//    private LocalDateTime createdAt;
+//
+//    @UpdateTimestamp
+//    private LocalDateTime updatedAt;
 }

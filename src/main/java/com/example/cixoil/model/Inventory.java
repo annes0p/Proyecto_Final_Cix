@@ -2,9 +2,6 @@ package com.example.cixoil.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -13,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "inventory")
-public class Inventory {
+public class Inventory extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_inventory")
@@ -29,6 +26,6 @@ public class Inventory {
     @Column(name = "minStock")
     private Long minStock;
 
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+//    @UpdateTimestamp
+//    private LocalDateTime updatedAt;
 }

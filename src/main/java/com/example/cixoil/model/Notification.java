@@ -3,9 +3,6 @@ package com.example.cixoil.model;
 import com.example.cixoil.enums.NotificationStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -14,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "notification")
-public class Notification {
+public class Notification extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_notification")
@@ -34,7 +31,7 @@ public class Notification {
     @Column(name = "notification_status")
     private NotificationStatus notificationStatus;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+//    @CreationTimestamp
+//    @Column(updatable = false)
+//    private LocalDateTime createdAt;
 }

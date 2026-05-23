@@ -4,11 +4,8 @@ import com.example.cixoil.enums.ProgressStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +16,7 @@ import java.util.List;
 @Setter
 @Builder
 @Table(name = "route")
-public class Route {
+public class Route extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_route")
@@ -40,9 +37,9 @@ public class Route {
     @OneToMany(mappedBy = "route")
     private List<Trip> trips = new ArrayList<>();
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+//    @CreationTimestamp
+//    private LocalDateTime createdAt;
+//
+//    @UpdateTimestamp
+//    private LocalDateTime updatedAt;
 }

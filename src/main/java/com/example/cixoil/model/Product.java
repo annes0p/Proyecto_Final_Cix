@@ -3,10 +3,8 @@ package com.example.cixoil.model;
 import com.example.cixoil.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -15,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "product")
-public class Product {
+public class Product extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_product")
@@ -45,7 +43,7 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+//    @CreationTimestamp
+//    @Column(updatable = false)
+//    private LocalDateTime createdAt;
 }

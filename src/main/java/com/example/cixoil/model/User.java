@@ -3,9 +3,6 @@ package com.example.cixoil.model;
 import com.example.cixoil.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -14,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Table(name = "user")
-public class User {
+public class User extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +35,7 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+//    @CreationTimestamp
+//    @Column(updatable = false)
+//    private LocalDateTime createdAt;
 }
