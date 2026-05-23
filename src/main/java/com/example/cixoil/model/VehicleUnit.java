@@ -35,6 +35,7 @@ public class VehicleUnit extends AuditableEntity {
     @Column(name = "plate")
     private String plate;
 
+    @Builder.Default
     @Column(name = "status")
     private Integer status = Status.ACTIVE.getValue();
 

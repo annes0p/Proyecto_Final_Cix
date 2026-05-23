@@ -47,6 +47,7 @@ public class Client extends AuditableEntity {
     @Column(name = "address")
     private String address;
 
+    @Builder.Default
     @Column(name = "status")
     private Integer status = Status.ACTIVE.getValue();
 
