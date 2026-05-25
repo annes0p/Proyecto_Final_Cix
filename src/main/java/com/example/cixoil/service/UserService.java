@@ -29,7 +29,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public List<UserDTO> findActives() {
+    public List<UserDTO> findNotDeleted() {
         return userRepository.findAllByStatusNot(Status.DELETED.getValue())
                 .stream().map(userMapper::toDTO).toList();
     }
@@ -100,9 +100,8 @@ public class UserService {
         User existent = requireUserById(id);
 
         existent.setStatus(
-                !Objects.equals(existent.getStatus(), Status.ACTIVE.getValue()) ?
-                        Status.INACTIVE.getValue() :
-                        Status.ACTIVE.getValue()
+                Objects.equals(existent.getStatus(), Status.ACTIVE.getValue()) ?
+                        Status.INACTIVE.getValue() : Status.ACTIVE.getValue()
         );
 
         return userMapper.toDTO(userRepository.save(existent));

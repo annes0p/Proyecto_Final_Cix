@@ -20,8 +20,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<?> listActiveUsers() {
-        List<UserDTO> data = userService.findActives();
+    public ResponseEntity<?> listNotDeletedUsers() {
+        List<UserDTO> data = userService.findNotDeleted();
         return ResponseUtil.ok("Usuarios obtenidos correctamente", data);
     }
 
