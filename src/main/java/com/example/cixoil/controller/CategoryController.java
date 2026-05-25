@@ -19,7 +19,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<?> listNotDeletedUsers() {
+    public ResponseEntity<?> listNotDeleted() {
         List<CategoryDTO> data = categoryService.findNotDeleted();
         return ResponseUtil.ok("Categorías obtenidas correctamente", data);
     }

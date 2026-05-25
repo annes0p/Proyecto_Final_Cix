@@ -19,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<?> listNotDeletedUsers() {
+    public ResponseEntity<?> listNotDeleted() {
         List<UserDTO> data = userService.findNotDeleted();
         return ResponseUtil.ok("Usuarios obtenidos correctamente", data);
     }

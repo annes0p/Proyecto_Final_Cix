@@ -12,13 +12,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/products/brands")
+@RequestMapping("/api/product-brands")
 public class ProductBrandController {
     
     private final ProductBrandService productBrandService;
 
     @GetMapping
-    public ResponseEntity<?> listNotDeletedUsers() {
+    public ResponseEntity<?> listNotDeleted() {
         List<ProductBrandDTO> data = productBrandService.findAll();
         return ResponseUtil.ok("Marcas de producto obtenidas correctamente", data);
     }
