@@ -27,7 +27,7 @@ public class Product extends AuditableEntity {
     private ProductBrand brand;
 
     @Column(name = "viscosity")
-    private BigDecimal viscosity;
+    private String viscosity;
 
     @Column(name = "description")
     private String description;
