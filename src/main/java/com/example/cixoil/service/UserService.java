@@ -78,7 +78,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO update(Long id, UserSaveDTO dto) {
+    public UserDTO update(UserSaveDTO dto, Long id) {
         Role role = requireRoleById(dto.roleId());
 
         User existent = requireUserById(id);
@@ -97,7 +97,7 @@ public class UserService {
         User existent = requireUserById(id);
 
         existent.setStatus(
-                Objects.equals(existent.getStatus(), Status.ACTIVE.getValue()) ?
+                existent.getStatus().equals(Status.ACTIVE.getValue())?
                         Status.INACTIVE.getValue() : Status.ACTIVE.getValue()
         );
 

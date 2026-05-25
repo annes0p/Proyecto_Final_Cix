@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findUserById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         UserDTO existent = userService.getById(id);
         return  ResponseUtil.ok("Usuario encontrado", existent);
     }
@@ -38,7 +38,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody UserSaveDTO dto, @PathVariable Long id) {
-        UserDTO updated = userService.update(id, dto);
+        UserDTO updated = userService.update(dto, id);
         return ResponseUtil.ok("Usuario actualizado correctamente", updated);
     }
 
@@ -47,10 +47,7 @@ public class UserController {
         UserDTO toggled = userService.toggleStatus(id);
         String msg = toggled.status().equals(Status.ACTIVE.getValue()) ?
                 "Usuario activado correctamente" : "Usuario desactivado correctamente";
-        return ResponseUtil.ok(
-                msg,
-                toggled
-        );
+        return ResponseUtil.ok(msg, toggled);
     }
 
     @PatchMapping("/{id}/delete")
