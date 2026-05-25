@@ -10,6 +10,7 @@ import com.example.cixoil.model.Role;
 import com.example.cixoil.model.User;
 import com.example.cixoil.repository.RoleRepository;
 import com.example.cixoil.repository.UserRepository;
+import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<UserDTO> getById(Long id) {
-        return userRepository.findById(id).map(userMapper::toDTO);
+    public UserDTO getById(Long id) {
+        return userRepository.findById(id).map(userMapper::toDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el usuario"));
     }
 
     @Transactional(readOnly = true)
@@ -62,13 +64,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO save(UserSaveDTO dto) {
-        return dto.id() == null ?
-                create(dto) :
-                update(dto);
-    }
-
-    private UserDTO create(UserSaveDTO dto) {
+    public UserDTO create(UserSaveDTO dto) {
         Role role = requireRoleById(dto.roleId());
 
         User created = User.builder()
@@ -81,10 +77,11 @@ public class UserService {
         return userMapper.toDTO(userRepository.save(created));
     }
 
-    private UserDTO update(UserSaveDTO dto) {
+    @Transactional
+    public UserDTO update(Long id, UserSaveDTO dto) {
         Role role = requireRoleById(dto.roleId());
 
-        User existent = requireUserById(dto.id());
+        User existent = requireUserById(id);
 
         existent.setUsername(dto.username());
         existent.setEmail(dto.email());
