@@ -10,6 +10,10 @@ public class ResponseUtil {
         return ResponseEntity.ok(new ApiResponseDTO<>(true, msg, data));
     }
 
+    public static <T> ResponseEntity<ApiResponseDTO<T>> ok(String msg) {
+        return ResponseEntity.ok(new ApiResponseDTO<>(true, msg, null));
+    }
+
     public static <T> ResponseEntity<ApiResponseDTO<T>> notFound(String msg) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponseDTO<>(false, msg, null));
