@@ -1,4 +1,4 @@
-package com.example.cixoil.dto.product;
+package com.example.cixoil.dto.productbrand;
 
 public record ProductBrandDTO(
         Long id,

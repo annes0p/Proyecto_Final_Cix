@@ -1,7 +1,7 @@
 package com.example.cixoil.service;
 
-import com.example.cixoil.dto.product.ProductBrandDTO;
-import com.example.cixoil.dto.product.ProductBrandSaveDTO;
+import com.example.cixoil.dto.productbrand.ProductBrandDTO;
+import com.example.cixoil.dto.productbrand.ProductBrandSaveDTO;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.ProductBrandMapper;
 import com.example.cixoil.model.ProductBrand;
