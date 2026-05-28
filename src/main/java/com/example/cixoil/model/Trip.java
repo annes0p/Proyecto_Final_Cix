@@ -1,6 +1,7 @@
 package com.example.cixoil.model;
 
 import com.example.cixoil.enums.ProgressStatus;
+import com.example.cixoil.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,7 +38,12 @@ public class Trip {
     @Column(name = "end_time")
     private LocalTime endTime;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "progress_status")
-    private ProgressStatus progressStatus;
+    private ProgressStatus progressStatus = ProgressStatus.PENDING;
+
+    @Builder.Default
+    @Column(name = "status")
+    private Integer status = Status.ACTIVE.getValue();
 }
