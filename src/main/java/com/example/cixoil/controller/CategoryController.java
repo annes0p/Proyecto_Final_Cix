@@ -27,7 +27,7 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         CategoryDTO existent = categoryService.getById(id);
-        return ResponseUtil.ok("Categorías obtenidas correctamente", existent);
+        return ResponseUtil.ok("Categoría obtenidas correctamente", existent);
     }
 
     @PostMapping
