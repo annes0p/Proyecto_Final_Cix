@@ -4,6 +4,6 @@ public record UserSaveDTO(
         String username,
         String email,
         String password,
-        Long roleId
+        Long idRole
 ) {
 }

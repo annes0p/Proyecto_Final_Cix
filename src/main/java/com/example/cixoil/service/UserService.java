@@ -10,14 +10,12 @@ import com.example.cixoil.model.Role;
 import com.example.cixoil.model.User;
 import com.example.cixoil.repository.RoleRepository;
 import com.example.cixoil.repository.UserRepository;
-import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -65,7 +63,7 @@ public class UserService {
 
     @Transactional
     public UserDTO create(UserSaveDTO dto) {
-        Role role = requireRoleById(dto.roleId());
+        Role role = requireRoleById(dto.idRole());
 
         User created = User.builder()
                 .username(dto.username())
@@ -79,7 +77,7 @@ public class UserService {
 
     @Transactional
     public UserDTO update(UserSaveDTO dto, Long id) {
-        Role role = requireRoleById(dto.roleId());
+        Role role = requireRoleById(dto.idRole());
 
         User existent = requireUserById(id);
 

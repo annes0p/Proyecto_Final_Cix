@@ -2,6 +2,7 @@ package com.example.cixoil.mapper;
 
 import com.example.cixoil.dto.auth.AuthUserDTO;
 import com.example.cixoil.dto.user.UserDTO;
+import com.example.cixoil.dto.user.UserRefDTO;
 import com.example.cixoil.model.Role;
 import com.example.cixoil.model.User;
 import org.mapstruct.Mapper;
@@ -13,6 +14,9 @@ public interface UserMapper {
 
     AuthUserDTO toAuthUserDTO(User user);
 
+    UserRefDTO toUserRefDTO(User user);
+
+    // Cambiar para no flatten
     default String map(Role role) {
         return role != null ? role.getName() : null;
     }
