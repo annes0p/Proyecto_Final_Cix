@@ -30,9 +30,10 @@ public class Route extends AuditableEntity {
     @Column(name = "route_date")
     private LocalDate routeDate;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "progress_status")
-    private ProgressStatus progressStatus;
+    private ProgressStatus progressStatus = ProgressStatus.PENDING;
 
     @JsonIgnoreProperties("route")
     @OneToMany(mappedBy = "route")

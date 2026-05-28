@@ -26,6 +26,7 @@ public class TripService {
     private final TripRepository tripRepository;
     private final TripMapper tripMapper;
     private final RouteRepository routeRepository;
+    private final RouteService routeService;
     private final LocationRepository locationRepository;
 
     //TODO: Estandarizar
@@ -39,19 +40,6 @@ public class TripService {
     public TripDTO getById(Long id) {
         Trip trip = requireTripById(id, "Viaje no encontrado");
         return tripMapper.toDTO(trip);
-    }
-
-    @Transactional(readOnly = true)
-    public List<TripDTO> findByRouteId(Long id) {
-        Route route = requireRouteById(id, "No se encontró la ruta");
-        return route.getTrips()
-                .stream().map(tripMapper::toDTO).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<TripDTO> findByStatus(ProgressStatus progress) {
-        return tripRepository.findByProgressStatus(progress)
-                .stream().map(tripMapper::toDTO).toList();
     }
 
     @Transactional
@@ -104,6 +92,8 @@ public class TripService {
         existent.setStartTime(LocalTime.now());
         existent.setProgressStatus(ProgressStatus.IN_PROGRESS);
 
+        routeService.recalculateProgress(existent.getRoute().getId());
+
         return tripMapper.toDTO(tripRepository.save(existent));
     }
 
@@ -115,6 +105,8 @@ public class TripService {
 
         existent.setEndTime(LocalTime.now());
         existent.setProgressStatus(ProgressStatus.COMPLETED);
+
+        routeService.recalculateProgress(existent.getRoute().getId());
 
         return tripMapper.toDTO(tripRepository.save(existent));
     }
