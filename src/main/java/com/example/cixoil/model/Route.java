@@ -1,6 +1,7 @@
 package com.example.cixoil.model;
 
 import com.example.cixoil.enums.ProgressStatus;
+import com.example.cixoil.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,10 @@ public class Route extends AuditableEntity {
     @JsonIgnoreProperties("route")
     @OneToMany(mappedBy = "route")
     private List<Trip> trips = new ArrayList<>();
+
+    @Builder.Default
+    @Column(name = "status")
+    private Integer status = Status.ACTIVE.getValue();
 
 //    @CreationTimestamp
 //    private LocalDateTime createdAt;
