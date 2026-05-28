@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
+    // Cambiar a no flatten
     @Mapping(target = "brand", expression = "java(map(product.getBrand()))")
     @Mapping(target = "category", expression = "java(map(product.getCategory()))")
     ProductDTO toDTO(Product product);

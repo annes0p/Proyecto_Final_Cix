@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 
 public record ProductSaveDTO(
         String name,
-        Long brandId,
+        Long idBrand,
         String viscosity,
         String description,
         BigDecimal price,
-        Long categoryId
+        Long idCategory
 ) {
 }

@@ -41,8 +41,8 @@ public class ProductService {
 
     @Transactional
     public ProductDTO create(ProductSaveDTO dto) {
-        ProductBrand brand = requireBrandById(dto.brandId());
-        Category category = requireCategoryById(dto.categoryId());
+        ProductBrand brand = requireBrandById(dto.idBrand());
+        Category category = requireCategoryById(dto.idCategory());
 
         Product created = Product.builder()
                 .name(dto.name())
@@ -60,8 +60,8 @@ public class ProductService {
     public ProductDTO update(ProductSaveDTO dto, Long id) {
         Product existent = requireProductById(id);
 
-        ProductBrand brand = requireBrandById(dto.brandId());
-        Category category = requireCategoryById(dto.categoryId());
+        ProductBrand brand = requireBrandById(dto.idBrand());
+        Category category = requireCategoryById(dto.idCategory());
 
         existent.setName(dto.name());
         existent.setDescription(dto.description());
