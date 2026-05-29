@@ -52,8 +52,8 @@ public class Client extends AuditableEntity {
     private Integer status = Status.ACTIVE.getValue();
 
     @Builder.Default
-    @Column(name = "is_trusted", nullable = false)
-    private boolean isTrusted = false;
+    @Column(name = "trusted", nullable = false)
+    private boolean trusted = false;
 
 //    @CreationTimestamp
 //    @Column(updatable = false)

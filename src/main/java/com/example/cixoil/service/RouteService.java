@@ -58,7 +58,7 @@ public class RouteService {
 
     @Transactional
     public RouteDTO create(RouteSaveDTO dto) {
-        User user = requireUserById(dto.idUser(), "No se encontró usuario");
+        User user = requireUserById(dto.idUser(), "No se encontró ruta");
 
         Route created = Route.builder()
                 .user(user)
