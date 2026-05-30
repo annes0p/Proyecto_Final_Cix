@@ -38,6 +38,6 @@ public class Role {
             name = "role_module",
             joinColumns = @JoinColumn(name = "id_role"),
             inverseJoinColumns = @JoinColumn(name = "id_module"))
-    @JsonIgnoreProperties("role")
+    @JsonIgnoreProperties("role") // ?
     private List<Module> modules = new ArrayList<>();
 }

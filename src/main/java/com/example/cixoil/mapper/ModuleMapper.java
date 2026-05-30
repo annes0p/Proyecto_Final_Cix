@@ -7,6 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ModuleMapper {
 
-    ModuleDTO toDto(Module module);
+    ModuleDTO toDTO(Module module);
 
 }
