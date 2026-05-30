@@ -1,7 +1,9 @@
 package com.example.cixoil.service;
 
+import com.example.cixoil.dto.SelectDTO;
 import com.example.cixoil.dto.productbrand.ProductBrandDTO;
 import com.example.cixoil.dto.productbrand.ProductBrandSaveDTO;
+import com.example.cixoil.enums.Status;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.ProductBrandMapper;
 import com.example.cixoil.model.ProductBrand;
@@ -29,6 +31,14 @@ public class ProductBrandService {
     public ProductBrandDTO getById(Long id) {
         return productBrandRepository.findById(id).map(productBrandMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Marca de producto no encontrada"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<SelectDTO<Long>> listForSelect() {
+        return productBrandRepository.findAll()
+                .stream()
+                .map(e -> new SelectDTO<>(e.getId(), e.getName()))
+                .toList();
     }
 
     @Transactional

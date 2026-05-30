@@ -4,7 +4,7 @@ import com.example.cixoil.dto.ApiResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class ResponseUtil {
+public final class ResponseUtil {
 
     public static <T> ResponseEntity<ApiResponseDTO<T>> ok(String msg, T data) {
         return ResponseEntity.ok(new ApiResponseDTO<>(true, msg, data));

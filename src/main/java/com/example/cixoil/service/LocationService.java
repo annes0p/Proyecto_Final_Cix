@@ -1,6 +1,8 @@
 package com.example.cixoil.service;
 
+import com.example.cixoil.dto.SelectDTO;
 import com.example.cixoil.dto.location.LocationDTO;
+import com.example.cixoil.enums.Status;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.LocationMapper;
 import com.example.cixoil.repository.LocationRepository;
@@ -27,5 +29,13 @@ public class LocationService {
     public LocationDTO getById(Long id) {
         return locationRepository.findById(id).map(locationMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Lugar no encontrado"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<SelectDTO<Long>> listForSelect() {
+        return locationRepository.findAll()
+                .stream()
+                .map(e -> new SelectDTO<>(e.getId(), e.getName()))
+                .toList();
     }
 }

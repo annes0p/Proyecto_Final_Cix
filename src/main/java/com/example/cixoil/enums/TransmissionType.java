@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum TransmissionType {
+public enum TransmissionType implements SelectableEnum {
     MANUAL("Manual"),
     AUTOMATIC("Automático"),
     CVT("CVT (Transmisión variable continua)"),

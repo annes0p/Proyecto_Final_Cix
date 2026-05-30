@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum FuelType {
+public enum FuelType implements SelectableEnum {
     GASOLINE("Gasolina"),
     DIESEL("Diésel"),
     HYBRID("Híbrido"),

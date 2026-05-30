@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum DocumentType {
+public enum DocumentType implements SelectableEnum {
     DNI("DNI"),
     RUC("RUC");
 

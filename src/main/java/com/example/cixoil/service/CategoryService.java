@@ -1,5 +1,6 @@
 package com.example.cixoil.service;
 
+import com.example.cixoil.dto.SelectDTO;
 import com.example.cixoil.dto.category.CategoryDTO;
 import com.example.cixoil.dto.category.CategorySaveDTO;
 import com.example.cixoil.enums.Status;
@@ -30,6 +31,14 @@ public class CategoryService {
     public CategoryDTO getById(Long id) {
         return categoryRepository.findById(id).map(categoryMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<SelectDTO<Long>> listForSelect() {
+        return categoryRepository.findAllByStatusNot(Status.DELETED.getValue())
+                .stream()
+                .map(e -> new SelectDTO<>(e.getId(), e.getName()))
+                .toList();
     }
 
     @Transactional

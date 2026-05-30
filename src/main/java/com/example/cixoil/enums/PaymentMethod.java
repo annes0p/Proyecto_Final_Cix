@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum PaymentMethod {
+public enum PaymentMethod implements SelectableEnum {
     YAPE("Yape"),
     CASH("Efectivo"),
     CARD("Tarjeta"),

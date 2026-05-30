@@ -1,5 +1,6 @@
 package com.example.cixoil.service;
 
+import com.example.cixoil.dto.SelectDTO;
 import com.example.cixoil.dto.module.ModuleDTO;
 import com.example.cixoil.dto.role.RoleDTO;
 import com.example.cixoil.dto.role.RoleRefDTO;
@@ -34,9 +35,11 @@ public class RoleService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoleRefDTO> findRefNotDeleted() {
+    public List<SelectDTO<Long>> listForSelect() {
         return roleRepository.findAllByStatusNot(Status.DELETED.getValue())
-                .stream().map(roleMapper::toRefDTO).toList();
+                .stream()
+                .map(e -> new SelectDTO<>(e.getId(), e.getName()))
+                .toList();
     }
 
     @Transactional(readOnly = true)

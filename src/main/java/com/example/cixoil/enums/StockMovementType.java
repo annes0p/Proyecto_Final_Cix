@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum StockMovementType {
+public enum StockMovementType implements SelectableEnum {
     IN("Entrada"),
     OUT("Salida"),
     ADJUSTMENT("Ajuste"),

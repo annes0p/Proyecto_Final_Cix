@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum VoucherType {
+public enum VoucherType implements SelectableEnum {
     SALE_NOTE("Nota de venta"),
     INVOICE("Factura"),
     RECEIPT("Boleta");
