@@ -1,6 +1,7 @@
 package com.example.cixoil.model;
 
 import com.example.cixoil.enums.FuelType;
+import com.example.cixoil.enums.Status;
 import com.example.cixoil.enums.TransmissionType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,13 +35,19 @@ public class VehicleModel {
     @Column(name = "motor_cc")
     private Integer motorCC;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "fuel_type")
     private FuelType fuelType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "transmission_type")
     private TransmissionType transmissionType;
 
     @JoinColumn(name = "id_vehicle_type")
     @ManyToOne(fetch = FetchType.LAZY)
     private VehicleType vehicleType;
+
+    @Builder.Default
+    @Column(name = "status")
+    private Integer status = Status.ACTIVE.getValue();
 }
