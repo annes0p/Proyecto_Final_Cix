@@ -21,6 +21,10 @@ public class SelectController {
     private final ProductBrandService productBrandService;
     private final LocationService locationService;
     private final CategoryService categoryService;
+    private final VehicleBrandService vehicleBrandService;
+    private final VehicleTypeService vehicleTypeService;
+    private final VehicleUseTypeService vehicleUseTypeService;
+
     private final String successMessage = "Lista de %s obtenida correctamente";
 
     @GetMapping("/documents")
@@ -118,6 +122,33 @@ public class SelectController {
         List<SelectDTO<Long>> data = categoryService.listForSelect();
         return ResponseUtil.ok(
                 String.format(successMessage, "categorías"),
+                data
+        );
+    }
+
+    @GetMapping("/vehicle-brands")
+    public ResponseEntity<?> listVehicleBrands() {
+        List<SelectDTO<Long>> data = vehicleBrandService.listForSelect();
+        return ResponseUtil.ok(
+                String.format(successMessage, "marcas de vehículo"),
+                data
+        );
+    }
+
+    @GetMapping("/vehicle-types")
+    public ResponseEntity<?> listVehicleTypes() {
+        List<SelectDTO<Long>> data = vehicleTypeService.listForSelect();
+        return ResponseUtil.ok(
+                String.format(successMessage, "tipos de vehículos"),
+                data
+        );
+    }
+
+    @GetMapping("/vehicle-uses")
+    public ResponseEntity<?> listVehicleUseTypes() {
+        List<SelectDTO<Long>> data = vehicleUseTypeService.listForSelect();
+        return ResponseUtil.ok(
+                String.format(successMessage, "tipos de uso de vehículo"),
                 data
         );
     }
