@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     List<Supplier> findAllByStatusNot(Integer status);
 
-    List<Supplier> findByNameContainingIgnoreCase(String part);
+    List<Supplier> findByLegalNameContainingIgnoreCase(String part);
 
     Optional<Supplier> findByDocNumber(String docNumber);
 }
