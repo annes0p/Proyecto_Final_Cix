@@ -17,7 +17,7 @@ public class ProductRecommendation extends AuditableEntity {
     @Column(name = "id_product_recommendation")
     private Long id;
 
-    @JoinColumn(name = "id_vehicle_type")
+    @JoinColumn(name = "id_vehicle_use_type")
     @ManyToOne(fetch = FetchType.LAZY)
     private VehicleUseType vehicleUseType;
 
