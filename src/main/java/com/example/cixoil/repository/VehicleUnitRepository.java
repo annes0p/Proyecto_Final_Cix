@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface VehicleUnitRepository extends JpaRepository<VehicleUnit, Long> {
     List<VehicleUnit> findAllByStatusNot(Integer status);
+    List<VehicleUnit> findAllByClient_Id(Long idClient);
 }

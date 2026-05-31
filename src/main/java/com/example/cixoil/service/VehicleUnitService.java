@@ -99,6 +99,13 @@ public class VehicleUnitService {
         vehicleUnitRepository.save(existent);
     }
 
+    @Transactional(readOnly = true)
+    public List<VehicleUnitDTO> findAllVehicleUnitsByClientId(Long idClient) {
+        requireClientById(idClient, "Cliente no encontrado");
+        return vehicleUnitRepository.findAllByClient_Id(idClient)
+                .stream().map(vehicleUnitMapper::toDTO).toList();
+    }
+
     // Require
 
     private VehicleUnit requireVehicleUnitById(Long id, String errorMessage) {

@@ -2,6 +2,7 @@ package com.example.cixoil.controller;
 
 import com.example.cixoil.dto.client.ClientDTO;
 import com.example.cixoil.dto.client.ClientSaveDTO;
+import com.example.cixoil.dto.vehicleunit.VehicleUnitDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.service.ClientService;
 import com.example.cixoil.utils.ResponseUtil;
@@ -28,6 +29,12 @@ public class ClientController {
     public ResponseEntity<?> findById(@PathVariable Long id) {
         ClientDTO existent = clientService.getById(id);
         return ResponseUtil.ok("Cliente obtenido correctamente", existent);
+    }
+
+    @GetMapping("/{id}/vehicles")
+    public ResponseEntity<?> findVehicles(@PathVariable Long id) {
+        List<VehicleUnitDTO> data = clientService.listClientVehicles(id);
+        return ResponseUtil.ok("Vehículos del cliente obtenidos correctamente", data);
     }
 
     @PostMapping
