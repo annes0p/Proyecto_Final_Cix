@@ -50,4 +50,20 @@ public class VehicleModel {
     @Builder.Default
     @Column(name = "status")
     private Integer status = Status.ACTIVE.getValue();
+
+    public String toInput() {
+        return """
+                - Modelo: %s
+                - Año: %d
+                - Marca: %s
+                - Tipo de vehículo: %s
+                - Caballos de fuerza: %d
+                - CC del motor: %d
+                - Combustible: %s
+                - Transmisión: %s
+                """
+                .formatted(model, year, vehicleBrand.getName(),
+                        vehicleType.getName(), horsePower, motorCC,
+                        fuelType.name(), transmissionType.name());
+    }
 }

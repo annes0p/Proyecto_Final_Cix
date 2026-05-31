@@ -21,4 +21,11 @@ public class VehicleUseType {
 
     @Column(name = "description")
     private String description;
+
+    public String toInput() {
+        return """
+                - Tipo: %s
+                - Descripción: %s
+                """.formatted(name, description);
+    }
 }
