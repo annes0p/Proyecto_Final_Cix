@@ -21,13 +21,13 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<?> listNotDeleted() {
         List<ClientDTO> data = clientService.findNotDeleted();
-        return ResponseUtil.ok("Clientes obtenidas correctamente", data);
+        return ResponseUtil.ok("Clientes obtenidos correctamente", data);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         ClientDTO existent = clientService.getById(id);
-        return ResponseUtil.ok("Cliente obtenidas correctamente", existent);
+        return ResponseUtil.ok("Cliente obtenido correctamente", existent);
     }
 
     @PostMapping
