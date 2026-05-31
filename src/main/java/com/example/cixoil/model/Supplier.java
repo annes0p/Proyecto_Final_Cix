@@ -2,8 +2,12 @@ package com.example.cixoil.model;
 
 import com.example.cixoil.enums.DocumentType;
 import com.example.cixoil.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -41,6 +45,16 @@ public class Supplier extends AuditableEntity {
     @Builder.Default
     @Column(name = "status")
     private Integer status = Status.ACTIVE.getValue();
+
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+           name = "supplier_product",
+            joinColumns = @JoinColumn(name = "id_supplier"),
+            inverseJoinColumns = @JoinColumn(name = "id_product")
+    )
+    @JsonIgnoreProperties("supplier") // ?
+    private List<Product> products = new ArrayList<>();
 
 //    @CreationTimestamp
 //    @Column(updatable = false)
