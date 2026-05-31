@@ -7,7 +7,7 @@ import com.example.cixoil.model.VehicleUseType;
 public record VehicleUnitDTO(
         Long id,
         VehicleModelDTO vehicleModel,
-        ClientDTO client,
+        ClientDTO client, // TODO: Cambiar dto sin datos contacto
         VehicleUseType vehicleUseType,
         String plate,
         String color,
