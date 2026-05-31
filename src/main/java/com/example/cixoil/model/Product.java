@@ -46,4 +46,15 @@ public class Product extends AuditableEntity {
 //    @CreationTimestamp
 //    @Column(updatable = false)
 //    private LocalDateTime createdAt;
+
+    public String toInput() {
+        return """
+                Id: %d
+                Nombre: %s
+                Marca: %s
+                Precio: %s
+                Viscosidad: %s
+                """.formatted(id, name, brand.getName(),
+                price.toPlainString(), viscosity);
+    }
 }

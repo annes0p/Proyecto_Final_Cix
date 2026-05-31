@@ -2,13 +2,16 @@ package com.example.cixoil.service;
 
 import com.example.cixoil.dto.client.ClientDTO;
 import com.example.cixoil.dto.client.ClientSaveDTO;
+import com.example.cixoil.dto.vehicleunit.VehicleUnitDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.ClientMapper;
+import com.example.cixoil.mapper.VehicleUnitMapper;
 import com.example.cixoil.model.Client;
 import com.example.cixoil.model.Location;
 import com.example.cixoil.repository.ClientRepository;
 import com.example.cixoil.repository.LocationRepository;
+import com.example.cixoil.repository.VehicleUnitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,7 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
     private final LocationRepository locationRepository;
+    private final VehicleUnitService vehicleUnitService;
 
     @Transactional(readOnly = true)
     public List<ClientDTO> findNotDeleted() {
@@ -33,6 +37,11 @@ public class ClientService {
     public ClientDTO getById(Long id) {
         Client client = requireClientById(id, "Cliente no encontrado");
         return clientMapper.toDTO(client);
+    }
+
+    @Transactional(readOnly = true)
+    public List<VehicleUnitDTO> listClientVehicles(Long id) {
+        return vehicleUnitService.findAllVehicleUnitsByClientId(id);
     }
 
     @Transactional

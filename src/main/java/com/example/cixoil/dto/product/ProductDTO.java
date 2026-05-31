@@ -1,15 +1,18 @@
 package com.example.cixoil.dto.product;
 
+import com.example.cixoil.dto.category.CategoryDTO;
+import com.example.cixoil.dto.productbrand.ProductBrandDTO;
+
 import java.math.BigDecimal;
 
-public record ProductDTO(
+public record ProductDTO( //TODO: No flatten
         Long id,
         String name,
-        String brand,
+        ProductBrandDTO brand,
         String viscosity,
         String description,
         BigDecimal price,
         Integer status,
-        String category
+        CategoryDTO category
 ) {
 }
