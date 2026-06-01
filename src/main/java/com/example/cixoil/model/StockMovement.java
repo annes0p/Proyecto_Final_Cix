@@ -36,6 +36,7 @@ public class StockMovement extends AuditableEntity {
     @Column(name = "movement_type")
     private StockMovementType stockMovementType;
 
+    @Builder.Default
     @Column(name = "movement_date")
-    private LocalDateTime movementDate;
+    private LocalDateTime movementDate = LocalDateTime.now();
 }

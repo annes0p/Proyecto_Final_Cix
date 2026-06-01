@@ -85,10 +85,9 @@ public class InventoryService {
     }
 
     @Transactional
-    public void updateStock(Long id, Long newStock) {
-        Inventory inventory = findEntityByProductId(id);
-
+    public void updateStock(Inventory inventory, Long newStock) {
         inventory.setStock(newStock);
+        // TODO: crear noti si newstock < minstock
     }
 
     // Require
