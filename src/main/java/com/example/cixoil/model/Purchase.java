@@ -27,9 +27,9 @@ public class Purchase {
     @ManyToOne(fetch = FetchType.LAZY)
     private Supplier supplier;
 
-    @CreationTimestamp
-    @Column(name = "purchase_date", updatable = false)
-    private LocalDate purchasedAt;
+    @Builder.Default
+    @Column(name = "purchase_date")
+    private LocalDate purchasedAt = LocalDate.now();
 
     @Column(name = "estimated_date")
     private LocalDate estimatedDeliveryAt;
@@ -45,8 +45,8 @@ public class Purchase {
     @Column(name = "reception_status")
     private ReceptionStatus receptionStatus = ReceptionStatus.PENDING;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tr")
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "transac")
 
     @Builder.Default
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)

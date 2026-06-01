@@ -2,6 +2,7 @@ package com.example.cixoil.service;
 
 import com.example.cixoil.dto.sale.SaleDTO;
 import com.example.cixoil.dto.sale.SaleSaveDTO;
+import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.SaleMapper;
 import com.example.cixoil.model.Client;
@@ -27,10 +28,10 @@ public class SaleService {
     private final SaleRepository saleRepository;
     private final SaleMapper saleMapper;
     private final SaleDetailService saleDetailService;
-    private final SaleDetailRepository saleDetailRepository;
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final DocumentSeriesService documentSeriesService;
+    private final StockMovementService stockMovementService;
 
     @Transactional(readOnly = true)
     public List<SaleDTO> findAll() {
@@ -75,9 +76,13 @@ public class SaleService {
                 .details(details)
                 .build();
 
-        saleDetailRepository.saveAll(details);
+        List<StockMovementSaveDTO> movements = stockMovementService.generateSaleMovements(
+                details, dto.saleDate());
 
-        return saleMapper.toDTO(saleRepository.save(created));
+        saleRepository.save(created);
+        stockMovementService.saveAll(movements);
+
+        return saleMapper.toDTO(created);
     }
 
     // Require

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,15 +37,31 @@ public class InventoryService {
     }
 
     @Transactional(readOnly = true)
-    public Inventory findEntityByProductId(Long id) {
-        Product product = requireProductById(id, "No se encontró producto");
+    public Inventory getEntityByProductId(Long id) {
+        requireProductById(id, "No se encontró producto");
         return inventoryRepository.findByProduct_Id(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Inventario no encontrado"));
     }
 
     @Transactional(readOnly = true)
+    public Inventory findOrCreateInventoryByProductId(Long id) {
+        Product product = requireProductById(id, "No se encontró producto");
+        Optional<Inventory> optional = inventoryRepository.findByProduct_Id(id);
+
+        if (optional.isPresent()) return optional.get();
+
+        Inventory inventory = Inventory.builder()
+                .product(product)
+                .stock(0L)
+                .minStock(0L)
+                .build();
+
+        return inventoryRepository.save(inventory);
+    }
+
+    @Transactional(readOnly = true)
     public InventoryDTO findByProductId(Long id) {
-        return inventoryMapper.toDTO(findEntityByProductId(id));
+        return inventoryMapper.toDTO(getEntityByProductId(id));
     }
 
     @Transactional

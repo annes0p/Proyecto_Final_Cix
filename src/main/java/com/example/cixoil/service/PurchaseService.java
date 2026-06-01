@@ -2,6 +2,8 @@ package com.example.cixoil.service;
 
 import com.example.cixoil.dto.purchase.PurchaseDTO;
 import com.example.cixoil.dto.purchase.PurchaseSaveDTO;
+import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
+import com.example.cixoil.enums.StockMovementType;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.PurchaseMapper;
 import com.example.cixoil.model.Purchase;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,6 +27,7 @@ public class PurchaseService {
     private final PurchaseMapper purchaseMapper;
     private final SupplierRepository supplierRepository;
     private final PurchaseDetailService purchaseDetailService;
+    private final StockMovementService stockMovementService;
 
     @Transactional(readOnly = true)
     public List<PurchaseDTO> findAll() {
@@ -49,16 +53,22 @@ public class PurchaseService {
                 .map(PurchaseDetail::getLineTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        Purchase created = Purchase.builder()
-                .supplier(supplier)
-                .purchasedAt(dto.purchasedAt())
-                .estimatedDeliveryAt(dto.estimatedDeliveryAt())
+        Purchase.PurchaseBuilder builder = Purchase.builder()
+                .supplier(supplier);
+        if (dto.purchasedAt() != null) builder.purchasedAt(dto.purchasedAt());
+        builder.estimatedDeliveryAt(dto.estimatedDeliveryAt())
                 .deliveredAt(dto.deliveredAt())
                 .total(total)
-                .details(details)
-                .build();
+                .details(details);
 
-        return purchaseMapper.toDTO(purchaseRepository.save(created));
+        Purchase created = builder.build();
+        List<StockMovementSaveDTO> movements = stockMovementService.generatePurchaseMovements(
+                details, created.getPurchasedAt().atStartOfDay());
+
+        purchaseRepository.save(created);
+        stockMovementService.saveAll(movements);
+
+        return purchaseMapper.toDTO(created);
     }
 
     // Require
