@@ -31,9 +31,10 @@ public class StockLoan extends AuditableEntity {
     @Column(name = "quantity_remaining")
     private Long quantityRemaining;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "loan_status")
-    private LoanStatus loanStatus;
+    private LoanStatus loanStatus = LoanStatus.PENDING;
 
 //    @CreationTimestamp
 //    @Column(updatable = false)
