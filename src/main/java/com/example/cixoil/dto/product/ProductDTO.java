@@ -5,7 +5,7 @@ import com.example.cixoil.dto.productbrand.ProductBrandDTO;
 
 import java.math.BigDecimal;
 
-public record ProductDTO( //TODO: No flatten
+public record ProductDTO(
         Long id,
         String name,
         ProductBrandDTO brand,

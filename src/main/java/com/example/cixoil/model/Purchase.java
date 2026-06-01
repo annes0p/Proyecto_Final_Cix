@@ -44,6 +44,9 @@ public class Purchase {
     @Column(name = "reception_status")
     private ReceptionStatus receptionStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tr")
+
     @Builder.Default
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseDetail> details = new ArrayList<>();
