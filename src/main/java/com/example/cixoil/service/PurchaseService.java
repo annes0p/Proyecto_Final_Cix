@@ -55,7 +55,6 @@ public class PurchaseService {
                 .estimatedDeliveryAt(dto.estimatedDeliveryAt())
                 .deliveredAt(dto.deliveredAt())
                 .total(total)
-                .receptionStatus(dto.receptionStatus())
                 .details(details)
                 .build();
 

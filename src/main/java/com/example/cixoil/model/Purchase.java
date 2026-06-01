@@ -40,9 +40,10 @@ public class Purchase {
     @Column(name = "total")
     private BigDecimal total;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "reception_status")
-    private ReceptionStatus receptionStatus;
+    private ReceptionStatus receptionStatus = ReceptionStatus.PENDING;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tr")
