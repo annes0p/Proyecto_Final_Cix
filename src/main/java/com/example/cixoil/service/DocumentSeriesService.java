@@ -15,12 +15,12 @@ public class DocumentSeriesService {
     private final DocumentSeriesRepository documentSeriesRepository;
 
     @Transactional
-    public Long generateNextCorrelative(String series) {
+    public String  generateNextCorrelative(String series) {
         if (!isValidSeries(series)) throw new InvalidArgumentException("La serie es inválida");
         DocumentSeries documentSeries = requireBySeries(series);
         Long next = documentSeries.getCurrentNumber() + 1;
         documentSeries.setCurrentNumber(next);
-        return next;
+        return String.format("%08d", next);
     }
 
     // Require
