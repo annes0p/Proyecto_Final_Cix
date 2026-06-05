@@ -10,6 +10,7 @@ public enum StockMovementType implements SelectableEnum {
     OUT("Salida"),
     ADJUSTMENT_IN("Ajuste (entrada)"),
     ADJUSTMENT_OUT("Ajuste (salida)"),
+    SALE_CANCELLATION("Anulación de venta"),
     SALE_RETURN("Devolución de venta"),
     PURCHASE_RETURN("Devolución de compra");
 
@@ -17,7 +18,7 @@ public enum StockMovementType implements SelectableEnum {
 
     public boolean isAddition() {
         return switch (this) {
-            case IN, ADJUSTMENT_IN, SALE_RETURN -> true;
+            case IN, ADJUSTMENT_IN, SALE_RETURN, SALE_CANCELLATION -> true;
             case OUT, ADJUSTMENT_OUT, PURCHASE_RETURN -> false;
         };
     }

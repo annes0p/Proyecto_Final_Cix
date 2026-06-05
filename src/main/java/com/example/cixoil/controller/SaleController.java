@@ -34,4 +34,10 @@ public class SaleController {
         SaleDTO created = saleService.create(dto);
         return ResponseUtil.ok("Venta creada correctamente", created);
     }
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<?> cancel(@PathVariable Long id) {
+        SaleDTO canceled = saleService.cancel(id);
+        return ResponseUtil.ok("Venta cancelada", canceled);
+    }
 }

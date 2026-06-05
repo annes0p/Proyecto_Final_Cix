@@ -98,6 +98,18 @@ public class StockMovementService {
                 .toList();
     }
 
+    public List<StockMovementSaveDTO> generateSaleCancelMovements(List<SaleDetail> details, LocalDateTime date) {
+        return details
+                .stream()
+                .map(d -> new StockMovementSaveDTO(
+                        d.getProduct().getId(),
+                        d.getQuantity(),
+                        StockMovementType.SALE_CANCELLATION,
+                        date)
+                )
+                .toList();
+    }
+
     @Transactional
     public void saveAll(List<StockMovementSaveDTO> movements) {
         movements.forEach(this::create);

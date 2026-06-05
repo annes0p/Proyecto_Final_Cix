@@ -3,6 +3,8 @@ package com.example.cixoil.service;
 import com.example.cixoil.dto.sale.SaleDTO;
 import com.example.cixoil.dto.sale.SaleSaveDTO;
 import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
+import com.example.cixoil.enums.TransactionStatus;
+import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.SaleMapper;
 import com.example.cixoil.model.Client;
@@ -83,6 +85,23 @@ public class SaleService {
         stockMovementService.saveAll(movements);
 
         return saleMapper.toDTO(created);
+    }
+
+    @Transactional
+    public SaleDTO cancel(Long id) {
+        Sale sale = requireSaleById(id, "Venta no encontrada para cancelar");
+
+        if (sale.getTransactionStatus() == TransactionStatus.CANCELED)
+            throw new BusinessException("Esta venta ya fue anulada");
+
+        List<StockMovementSaveDTO> movements = stockMovementService.generateSaleCancelMovements(
+                sale.getDetails(),
+                sale.getSaleDate()); // ¿Mismo día?
+
+        sale.setTransactionStatus(TransactionStatus.CANCELED);
+        stockMovementService.saveAll(movements);
+
+        return saleMapper.toDTO(sale);
     }
 
     // Require

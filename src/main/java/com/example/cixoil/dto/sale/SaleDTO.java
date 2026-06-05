@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record SaleDTO(
+        Long id,
         LocalDateTime saleDate,
         VoucherType voucherType,
         String series,
