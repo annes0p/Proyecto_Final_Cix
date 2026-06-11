@@ -5,7 +5,7 @@ import com.example.cixoil.dto.client.ClientRefDTO;
 import com.example.cixoil.model.Client;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = LocationMapper.class)
 public interface ClientMapper {
 
     ClientDTO toDTO(Client client);
