@@ -1,6 +1,6 @@
 package com.example.cixoil.dto.client;
 
-import com.example.cixoil.model.Location;
+import com.example.cixoil.dto.location.LocationDTO;
 
 public record ClientDTO(
         Long id,
@@ -11,7 +11,7 @@ public record ClientDTO(
         String docNumber,
         String phoneNumber,
         String email,
-        Location location,
+        LocationDTO location,
         String address,
         Integer status,
         boolean trusted

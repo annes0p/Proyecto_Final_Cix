@@ -48,8 +48,9 @@ public class Sale {
   private User user;
 
   @JoinColumn(name = "id_client")
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   private Client client;
+
   @CreationTimestamp
   @Column(name = "sale_date", updatable = false)
   private LocalDateTime saleDate;

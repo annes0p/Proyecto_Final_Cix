@@ -42,6 +42,18 @@ public class SaleService {
     }
 
     @Transactional(readOnly = true)
+    public List<SaleDTO> findSalesByClientId(Long idCliente) {
+        return saleRepository.findAllByClient_Id(idCliente)
+                .stream().map(saleMapper::toDTO).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<SaleDTO> findNotCancelledSalesByClientId(Long idCliente) {
+        return saleRepository.findAllByClient_IdAndTransactionStatusNot(idCliente, TransactionStatus.CANCELED)
+                .stream().map(saleMapper::toDTO).toList();
+    }
+
+    @Transactional(readOnly = true)
     public SaleDTO getById(Long id) {
         Sale sale = requireSaleById(id, "Venta no encontrada");
         return saleMapper.toDTO(sale);
@@ -105,7 +117,7 @@ public class SaleService {
     }
 
     // Require
-
+    // TODO: Require púbicos para solo usar el servicio?
     private Sale requireSaleById(Long id, String errorMessage) {
         return saleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(errorMessage));

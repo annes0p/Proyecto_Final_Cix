@@ -2,6 +2,7 @@ package com.example.cixoil.controller;
 
 import com.example.cixoil.dto.client.ClientDTO;
 import com.example.cixoil.dto.client.ClientSaveDTO;
+import com.example.cixoil.dto.sale.SaleDTO;
 import com.example.cixoil.dto.vehicleunit.VehicleUnitDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.service.ClientService;
@@ -35,6 +36,12 @@ public class ClientController {
     public ResponseEntity<?> findVehicles(@PathVariable Long id) {
         List<VehicleUnitDTO> data = clientService.listClientVehicles(id);
         return ResponseUtil.ok("Vehículos del cliente obtenidos correctamente", data);
+    }
+
+    @GetMapping("/{id}/purchases")
+    public ResponseEntity<?> findPurchases(@PathVariable Long id) {
+        List<SaleDTO> data = clientService.listClientPurchases(id);
+        return ResponseUtil.ok("Compras del cliente obtenidas correctamente", data);
     }
 
     @PostMapping
