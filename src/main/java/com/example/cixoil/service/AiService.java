@@ -41,7 +41,7 @@ public class AiService {
                 
                 {
                     "idProduct": <aquí el número id del producto más adecuado>,
-                    "reason": "<explicación breve de por qué es el mejor>",
+                    "reason": "<explicación breve no mayor a 255 caracteres de por qué es el mejor>",
                     "priority": "<HIGH | MEDIUM | LOW>"
                 }
                 
