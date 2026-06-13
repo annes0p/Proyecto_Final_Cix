@@ -32,6 +32,6 @@ public class ProductRecommendationController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody RecommendationRequestDTO dto) {
         ProductRecommendationDTO created = productRecommendationService.create(dto);
-        return ResponseUtil.ok("Producto creado correctamente", created);
+        return ResponseUtil.ok("Recomendación creada correctamente", created);
     }
 }
