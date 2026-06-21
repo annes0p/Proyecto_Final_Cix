@@ -51,4 +51,9 @@ public class Purchase {
     @Builder.Default
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseDetail> details = new ArrayList<>();
+
+    public void addDetail(PurchaseDetail detail) {
+        details.add(detail);
+        detail.setPurchase(this);
+    }
 }

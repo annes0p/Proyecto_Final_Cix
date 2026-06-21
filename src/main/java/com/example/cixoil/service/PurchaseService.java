@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,8 +47,8 @@ public class PurchaseService {
         Supplier supplier = requireSupplierById(dto.idSupplier(),
                 "Proveedor no encontrado");
 
-        List<PurchaseDetail> details = dto.details()
-                .stream().map(purchaseDetailService::create).toList();
+        List<PurchaseDetail> details = new ArrayList<>(dto.details()
+                .stream().map(purchaseDetailService::build).toList());
 
         BigDecimal total = details.stream()
                 .map(PurchaseDetail::getLineTotal)
@@ -58,10 +59,10 @@ public class PurchaseService {
         if (dto.purchasedAt() != null) builder.purchasedAt(dto.purchasedAt());
         builder.estimatedDeliveryAt(dto.estimatedDeliveryAt())
                 .deliveredAt(dto.deliveredAt())
-                .total(total)
-                .details(details);
+                .total(total);
 
         Purchase created = builder.build();
+        details.forEach(created::addDetail);
         List<StockMovementSaveDTO> movements = stockMovementService.generatePurchaseMovements(
                 details, created.getPurchasedAt().atStartOfDay());
 

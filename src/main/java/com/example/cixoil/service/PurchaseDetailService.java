@@ -35,6 +35,19 @@ public class PurchaseDetailService {
         return purchaseDetailRepository.save(created);
     }
 
+    public PurchaseDetail build(PurchaseDetailSaveDTO dto) {
+        Product product = requireProductById(dto.idProduct(), "No se encontró producto");
+
+        BigDecimal lineTotal = BigDecimal.valueOf(dto.quantity()).multiply(product.getPrice());
+
+        return PurchaseDetail.builder()
+                .product(product)
+                .quantity(dto.quantity())
+                .unitPrice(product.getPrice())
+                .lineTotal(lineTotal)
+                .build();
+    }
+
     // Require
 
     private Product requireProductById(Long id, String errorMessage) {
