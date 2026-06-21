@@ -85,4 +85,9 @@ public class Sale {
   @Builder.Default
   @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<SaleDetail> details = new ArrayList<>();
+
+  public void addDetail(SaleDetail detail) {
+      details.add(detail);
+      detail.setSale(this);
+  }
 }

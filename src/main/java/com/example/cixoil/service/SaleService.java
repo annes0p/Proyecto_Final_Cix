@@ -12,7 +12,6 @@ import com.example.cixoil.model.Sale;
 import com.example.cixoil.model.SaleDetail;
 import com.example.cixoil.model.User;
 import com.example.cixoil.repository.ClientRepository;
-import com.example.cixoil.repository.SaleDetailRepository;
 import com.example.cixoil.repository.SaleRepository;
 import com.example.cixoil.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -68,8 +68,8 @@ public class SaleService {
 
         String correlative = documentSeriesService.generateNextCorrelative(dto.series());
 
-        List<SaleDetail> details = dto.details()
-                .stream().map(saleDetailService::toEntity).toList();
+        List<SaleDetail> details = new ArrayList<>(dto.details()
+                .stream().map(saleDetailService::build).toList());
 
         BigDecimal subtotal = getSumOf(details, SaleDetail::getSubtotal);
         BigDecimal taxAmount = getSumOf(details, SaleDetail::getTaxAmount);
@@ -87,8 +87,9 @@ public class SaleService {
                 .transactionStatus(dto.transactionStatus())
                 .client(client)
                 .user(user)
-                .details(details)
                 .build();
+
+        details.forEach(created::addDetail);
 
         List<StockMovementSaveDTO> movements = stockMovementService.generateSaleMovements(
                 details, dto.saleDate());

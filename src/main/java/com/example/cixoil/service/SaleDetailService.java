@@ -21,7 +21,7 @@ public class SaleDetailService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public SaleDetail toEntity(SaleDetailSaveDTO dto) {
+    public SaleDetail build(SaleDetailSaveDTO dto) {
         Product product = requireProductById(dto.idProduct(), "No se encontró producto");
 
         BigDecimal price = product.getPrice();
