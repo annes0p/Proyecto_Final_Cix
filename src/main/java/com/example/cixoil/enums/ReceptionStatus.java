@@ -7,8 +7,9 @@ import lombok.Getter;
 @Getter
 public enum ReceptionStatus {
     PENDING("Pendiente"),
-    PARTIALLY_RECIEVED("Recibido parcialmente"),
-    RECIEVED("Recibido");
+    PARTIALLY_RECEIVED("Recibido parcialmente"),
+    RECEIVED("Recibido");
 
     private final String value;
 }
+

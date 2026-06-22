@@ -34,4 +34,16 @@ public class PurchaseController {
         PurchaseDTO created = purchaseService.create(dto);
         return ResponseUtil.ok("Compra creada correctamente", created);
     }
+
+    @PatchMapping("/{id}/receive")
+    public ResponseEntity<?> receive(@PathVariable Long id) {
+        PurchaseDTO data = purchaseService.receive(id);
+        return ResponseUtil.ok("Compra recibida", data);
+    }
+
+    @PatchMapping("/{id}/partially-receive")
+    public ResponseEntity<?> partiallyReceive(@PathVariable Long id) {
+        PurchaseDTO data = purchaseService.partiallyReceive(id);
+        return ResponseUtil.ok("Compra parcialmente recibida", data);
+    }
 }

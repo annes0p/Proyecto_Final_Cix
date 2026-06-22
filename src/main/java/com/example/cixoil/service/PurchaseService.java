@@ -3,7 +3,7 @@ package com.example.cixoil.service;
 import com.example.cixoil.dto.purchase.PurchaseDTO;
 import com.example.cixoil.dto.purchase.PurchaseSaveDTO;
 import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
-import com.example.cixoil.enums.StockMovementType;
+import com.example.cixoil.enums.ReceptionStatus;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.PurchaseMapper;
 import com.example.cixoil.model.Purchase;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +70,21 @@ public class PurchaseService {
 
         return purchaseMapper.toDTO(created);
     }
+
+    @Transactional
+    public PurchaseDTO receive(Long id) {
+        Purchase purchase = requirePurchaseById(id, "No se encontró la compra");
+        purchase.setReceptionStatus(ReceptionStatus.RECEIVED);
+        return purchaseMapper.toDTO(purchaseRepository.save(purchase));
+    }
+
+    @Transactional
+    public PurchaseDTO partiallyReceive(Long id) {
+        Purchase purchase = requirePurchaseById(id, "No se encontró la compra");
+        purchase.setReceptionStatus(ReceptionStatus.PARTIALLY_RECEIVED);
+        return purchaseMapper.toDTO(purchaseRepository.save(purchase));
+    }
+
 
     // Require
 
