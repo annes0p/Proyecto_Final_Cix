@@ -1,5 +1,7 @@
 package com.example.cixoil.dto.product;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.math.BigDecimal;
 
 public record ProductSaveDTO(
@@ -8,6 +10,7 @@ public record ProductSaveDTO(
         String viscosity,
         String description,
         BigDecimal price,
-        Long idCategory
+        Long idCategory,
+        MultipartFile image
 ) {
 }

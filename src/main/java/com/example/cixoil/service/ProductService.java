@@ -1,5 +1,6 @@
 package com.example.cixoil.service;
 
+import com.example.cixoil.dto.CloudinaryUploadResult;
 import com.example.cixoil.dto.product.ProductDTO;
 import com.example.cixoil.dto.product.ProductSaveDTO;
 import com.example.cixoil.enums.Status;
@@ -11,6 +12,7 @@ import com.example.cixoil.model.ProductBrand;
 import com.example.cixoil.repository.CategoryRepository;
 import com.example.cixoil.repository.ProductBrandRepository;
 import com.example.cixoil.repository.ProductRepository;
+import com.example.cixoil.utils.CloudinaryFolders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +23,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
 
-
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final CategoryRepository categoryRepository;
     private final ProductBrandRepository productBrandRepository;
+    private final CloudinaryService cloudinaryService;
 
     @Transactional(readOnly = true)
     public List<ProductDTO> findNotDeleted() {
@@ -44,6 +46,15 @@ public class ProductService {
         ProductBrand brand = requireBrandById(dto.idBrand());
         Category category = requireCategoryById(dto.idCategory());
 
+        CloudinaryUploadResult image = null;
+
+        if (dto.image() != null && !dto.image().isEmpty()) {
+            image = cloudinaryService.uploadImageInFolder(
+                    dto.image(),
+                    CloudinaryFolders.PRODUCTS
+            );
+        }
+
         Product created = Product.builder()
                 .name(dto.name())
                 .viscosity(dto.viscosity())
@@ -51,6 +62,8 @@ public class ProductService {
                 .brand(brand)
                 .category(category)
                 .price(dto.price())
+                .imageUrl(image != null ? image.secureUrl() : null)
+                .imagePublicId(image != null ? image.publicId() : null)
                 .build();
 
         return productMapper.toDTO(productRepository.save(created));
@@ -63,12 +76,27 @@ public class ProductService {
         ProductBrand brand = requireBrandById(dto.idBrand());
         Category category = requireCategoryById(dto.idCategory());
 
+        CloudinaryUploadResult image = null;
+
+        if (dto.image() != null && !dto.image().isEmpty()) {
+            image = cloudinaryService.replaceImage(
+                    dto.image(),
+                    CloudinaryFolders.PRODUCTS,
+                    existent.getImagePublicId()
+            );
+        }
+
         existent.setName(dto.name());
         existent.setDescription(dto.description());
         existent.setBrand(brand);
         existent.setCategory(category);
         existent.setViscosity(dto.viscosity());
         existent.setPrice(dto.price());
+
+        if (image != null) {
+            existent.setImageUrl(image.secureUrl());
+            existent.setImagePublicId(image.publicId());
+        }
 
         return productMapper.toDTO(productRepository.save(existent));
     }

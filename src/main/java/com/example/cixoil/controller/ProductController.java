@@ -31,13 +31,13 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody ProductSaveDTO dto) {
+    public ResponseEntity<?> create(@ModelAttribute ProductSaveDTO dto) {
         ProductDTO created = productService.create(dto);
         return ResponseUtil.ok("Producto creado correctamente", created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody ProductSaveDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> update(@ModelAttribute ProductSaveDTO dto, @PathVariable Long id) {
         ProductDTO updated = productService.update(dto, id);
         return ResponseUtil.ok("Producto actualizado correctamente", updated);
     }

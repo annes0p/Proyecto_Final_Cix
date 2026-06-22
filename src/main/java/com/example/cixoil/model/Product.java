@@ -43,6 +43,12 @@ public class Product extends AuditableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "image_public_id")
+    private String imagePublicId;
+
 //    @CreationTimestamp
 //    @Column(updatable = false)
 //    private LocalDateTime createdAt;

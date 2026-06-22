@@ -13,6 +13,7 @@ public record ProductDTO(
         String description,
         BigDecimal price,
         Integer status,
-        CategoryDTO category
+        CategoryDTO category,
+        String imageUrl
 ) {
 }
