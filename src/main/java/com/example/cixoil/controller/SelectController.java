@@ -17,6 +17,7 @@ import java.util.List;
 public class SelectController {
 
     private final SelectService selectService;
+    // TODO: Pasar los demás services al SelectService para centralizar
     private final RoleService roleService;
     private final ProductBrandService productBrandService;
     private final LocationService locationService;
@@ -24,6 +25,7 @@ public class SelectController {
     private final VehicleBrandService vehicleBrandService;
     private final VehicleTypeService vehicleTypeService;
     private final VehicleUseTypeService vehicleUseTypeService;
+    private final IncidentTypeService incidentTypeService;
 
     private final String successMessage = "Lista de %s obtenida correctamente";
 
@@ -90,6 +92,15 @@ public class SelectController {
         );
     }
 
+    @GetMapping("/priorities")
+    public ResponseEntity<?> listPriorities() {
+        List<SelectDTO<String>> data = selectService.listPriorities();
+        return ResponseUtil.ok(
+                String.format(successMessage, "tipos de prioridad"),
+                data
+        );
+    }
+
     @GetMapping("/roles")
     public ResponseEntity<?> listRoles() {
         List<SelectDTO<Long>> data = roleService.listForSelect();
@@ -149,6 +160,15 @@ public class SelectController {
         List<SelectDTO<Long>> data = vehicleUseTypeService.listForSelect();
         return ResponseUtil.ok(
                 String.format(successMessage, "tipos de uso de vehículo"),
+                data
+        );
+    }
+
+    @GetMapping("/incident-types")
+    public ResponseEntity<?> listIncidentTypes() {
+        List<SelectDTO<Long>> data = incidentTypeService.listForSelect();
+        return ResponseUtil.ok(
+                String.format(successMessage, "tipos de incidentes"),
                 data
         );
     }

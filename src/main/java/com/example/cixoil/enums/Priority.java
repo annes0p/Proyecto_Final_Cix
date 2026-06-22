@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum Priority {
+public enum Priority implements SelectableEnum {
     HIGH("Alta"),
     MEDIUM("Media"),
     LOW("Baja");

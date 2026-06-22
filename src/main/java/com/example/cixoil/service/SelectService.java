@@ -17,8 +17,6 @@ public class SelectService {
     private final LocationService locationService;
     private final CategoryService categoryService;
 
-    // Posible abstracción usando interfaces {getValue()} para los enums
-
     public List<SelectDTO<String>> listDocumentTypes() {
         return SelectUtil.fromEnum(DocumentType.class);
     }
@@ -45,6 +43,10 @@ public class SelectService {
 
     public List<SelectDTO<String>> listVoucherTypes() {
         return SelectUtil.fromEnum(VoucherType.class);
+    }
+
+    public List<SelectDTO<String>> listPriorities(){
+        return SelectUtil.fromEnum(Priority.class);
     }
 
 }
