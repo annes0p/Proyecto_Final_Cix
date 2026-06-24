@@ -33,6 +33,7 @@ public class CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
     }
 
+    // TODO: Cambiar a mappers
     @Transactional(readOnly = true)
     public List<SelectDTO<Long>> listForSelect() {
         return categoryRepository.findAllByStatusNot(Status.DELETED.getValue())
