@@ -21,7 +21,9 @@ jobs:
           distribution: 'temurin'
           
       - name: Construir el Artefacto con Maven
-        run: ./mvnw clean package -DskipTests
+        run: |
+          chmod +x mvnw
+          ./mvnw clean package -DskipTests
         
       - name: Guardar el Artefacto generado (.jar)
         uses: actions/upload-artifact@v4
