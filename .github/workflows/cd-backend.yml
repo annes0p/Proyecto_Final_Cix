@@ -1,0 +1,30 @@
+name: CD - Empaquetado Backend
+
+on:
+  push:
+    branches: 
+      - main
+      - 'feature/*'
+
+jobs:
+  empaquetar-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+        
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          
+      - name: Construir el Artefacto con Maven
+        run: ./mvnw clean package -DskipTests
+        
+      - name: Guardar el Artefacto generado (.jar)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cix-backend-release
+          path: target/*.jar
