@@ -17,15 +17,6 @@ import java.util.List;
 public class SelectController {
 
     private final SelectService selectService;
-    // TODO: Pasar los demás services al SelectService para centralizar
-    private final RoleService roleService;
-    private final ProductBrandService productBrandService;
-    private final LocationService locationService;
-    private final CategoryService categoryService;
-    private final VehicleBrandService vehicleBrandService;
-    private final VehicleTypeService vehicleTypeService;
-    private final VehicleUseTypeService vehicleUseTypeService;
-    private final IncidentTypeService incidentTypeService;
 
     private final String successMessage = "Lista de %s obtenida correctamente";
 
@@ -103,7 +94,7 @@ public class SelectController {
 
     @GetMapping("/roles")
     public ResponseEntity<?> listRoles() {
-        List<SelectDTO<Long>> data = roleService.listForSelect();
+        List<SelectDTO<Long>> data = selectService.listRoles();
         return ResponseUtil.ok(
                 String.format(successMessage, "roles"),
                 data
@@ -112,7 +103,7 @@ public class SelectController {
 
     @GetMapping("/product-brands")
     public ResponseEntity<?> listProductBrands() {
-        List<SelectDTO<Long>> data = productBrandService.listForSelect();
+        List<SelectDTO<Long>> data = selectService.listProductBrands();
         return ResponseUtil.ok(
                 String.format(successMessage, "marcas de producto"),
                 data
@@ -121,7 +112,7 @@ public class SelectController {
 
     @GetMapping("/locations")
     public ResponseEntity<?> listLocations() {
-        List<SelectDTO<Long>> data = locationService.listForSelect();
+        List<SelectDTO<Long>> data = selectService.listLocations();
         return ResponseUtil.ok(
                 String.format(successMessage, "lugares"),
                 data
@@ -130,7 +121,7 @@ public class SelectController {
 
     @GetMapping("/categories")
     public ResponseEntity<?> listCategories() {
-        List<SelectDTO<Long>> data = categoryService.listForSelect();
+        List<SelectDTO<Long>> data = selectService.listCategories();
         return ResponseUtil.ok(
                 String.format(successMessage, "categorías"),
                 data
@@ -139,7 +130,7 @@ public class SelectController {
 
     @GetMapping("/vehicle-brands")
     public ResponseEntity<?> listVehicleBrands() {
-        List<SelectDTO<Long>> data = vehicleBrandService.listForSelect();
+        List<SelectDTO<Long>> data = selectService.listVehicleBrand();
         return ResponseUtil.ok(
                 String.format(successMessage, "marcas de vehículo"),
                 data
@@ -148,7 +139,7 @@ public class SelectController {
 
     @GetMapping("/vehicle-types")
     public ResponseEntity<?> listVehicleTypes() {
-        List<SelectDTO<Long>> data = vehicleTypeService.listForSelect();
+        List<SelectDTO<Long>> data = selectService.listVehicleTypes();
         return ResponseUtil.ok(
                 String.format(successMessage, "tipos de vehículos"),
                 data
@@ -157,7 +148,7 @@ public class SelectController {
 
     @GetMapping("/vehicle-uses")
     public ResponseEntity<?> listVehicleUseTypes() {
-        List<SelectDTO<Long>> data = vehicleUseTypeService.listForSelect();
+        List<SelectDTO<Long>> data = selectService.listVehicleUses();
         return ResponseUtil.ok(
                 String.format(successMessage, "tipos de uso de vehículo"),
                 data
@@ -166,12 +157,19 @@ public class SelectController {
 
     @GetMapping("/incident-types")
     public ResponseEntity<?> listIncidentTypes() {
-        List<SelectDTO<Long>> data = incidentTypeService.listForSelect();
+        List<SelectDTO<Long>> data = selectService.listIncidentTypes();
         return ResponseUtil.ok(
                 String.format(successMessage, "tipos de incidentes"),
                 data
         );
     }
 
-    // TODO: Faltan
+    @GetMapping("/incident-categories")
+    public ResponseEntity<?> listIncidentCategories() {
+        List<SelectDTO<Long>> data = selectService.listIncidentCategories();
+        return ResponseUtil.ok(
+                String.format(successMessage, "clases de incidentes"),
+                data
+        );
+    }
 }

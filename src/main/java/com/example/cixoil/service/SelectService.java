@@ -16,6 +16,11 @@ public class SelectService {
     private final ProductBrandService productBrandService;
     private final LocationService locationService;
     private final CategoryService categoryService;
+    private final VehicleBrandService vehicleBrandService;
+    private final VehicleTypeService vehicleTypeService;
+    private final VehicleUseTypeService vehicleUseTypeService;
+    private final IncidentTypeService incidentTypeService;
+    private final IncidentCategoryService incidentCategoryService;
 
     public List<SelectDTO<String>> listDocumentTypes() {
         return SelectUtil.fromEnum(DocumentType.class);
@@ -49,4 +54,41 @@ public class SelectService {
         return SelectUtil.fromEnum(Priority.class);
     }
 
+    // TODO: Estandarizar todos los select de clase
+
+    public List<SelectDTO<Long>> listRoles() {
+        return roleService.listForSelect();
+    }
+
+    public List<SelectDTO<Long>> listProductBrands() {
+        return productBrandService.listForSelect();
+    }
+
+    public List<SelectDTO<Long>> listLocations() {
+        return locationService.listForSelect();
+    }
+
+    public List<SelectDTO<Long>> listCategories() {
+        return categoryService.listForSelect();
+    }
+
+    public List<SelectDTO<Long>> listIncidentCategories() {
+        return incidentCategoryService.listForSelect();
+    }
+
+    public List<SelectDTO<Long>> listVehicleBrand() {
+        return vehicleBrandService.listForSelect();
+    }
+
+    public List<SelectDTO<Long>> listVehicleTypes() {
+        return vehicleTypeService.listForSelect();
+    }
+
+    public List<SelectDTO<Long>> listVehicleUses() {
+        return vehicleUseTypeService.listForSelect();
+    }
+
+    public List<SelectDTO<Long>> listIncidentTypes() {
+        return incidentTypeService.listForSelect();
+    }
 }
