@@ -13,4 +13,8 @@ public final class ValidationUtil {
         if (quantity == null) throw new InvalidArgumentException("La cantidad no puede ser null");
         if (quantity < 0) throw new InvalidArgumentException("La cantidad no puede ser menor a 0");
     }
+
+    public static boolean hasText(String text) {
+        return text != null && !text.isBlank();
+    }
 }
