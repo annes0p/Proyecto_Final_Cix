@@ -10,22 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_DATABASE: cixoil
-          MYSQL_USER: user
-          MYSQL_PASSWORD: password
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd "mysqladmin ping -h localhost"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Download project
         uses: actions/checkout@v4
@@ -39,10 +23,6 @@ jobs:
 
       - name: Run tests
         run: mvn test --no-transfer-progress
-        env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/cixoil
-          SPRING_DATASOURCE_USERNAME: user
-          SPRING_DATASOURCE_PASSWORD: password
 
       - name: Upload test report
         if: always()
