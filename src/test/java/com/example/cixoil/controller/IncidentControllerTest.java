@@ -31,7 +31,7 @@ class IncidentControllerTest extends BaseControllerTest {
 
     @MockBean
     private IncidentService incidentService;
-
+    // test
     @Test
     void shouldReturnIncidentById() throws Exception {
         IncidentDTO incident = new IncidentDTO(
