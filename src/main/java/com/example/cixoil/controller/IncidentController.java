@@ -102,4 +102,12 @@ public class IncidentController {
                 incidentService.cancel(id)
         );
     }
+
+    @PatchMapping("/{id}/next-state")
+    public ResponseEntity<?> next(@PathVariable Long id) {
+        return ResponseUtil.ok(
+                "El incidente ha avanzado al siguiente estado correctamente",
+                incidentService.next(id)
+        );
+    }
 }
