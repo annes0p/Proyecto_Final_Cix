@@ -15,6 +15,7 @@ public record IncidentDTO(
         IncidentCategoryRefDTO incidentCategory,
         String reference,
         IncidentStatus incidentStatus,
-        String fullTitle
+        String fullTitle,
+        String resolutionNote
 ) {
 }
