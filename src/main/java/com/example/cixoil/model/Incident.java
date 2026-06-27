@@ -51,4 +51,7 @@ public class Incident extends AuditableEntity{
 
     @Column(name = "full_title")
     private String fullTitle;
+
+    @Column(name = "resolution_note", length = 500)
+    private String resolutionNote;
 }

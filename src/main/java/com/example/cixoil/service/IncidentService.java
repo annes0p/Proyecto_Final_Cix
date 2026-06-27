@@ -1,6 +1,7 @@
 package com.example.cixoil.service;
 
 import com.example.cixoil.dto.incident.IncidentDTO;
+import com.example.cixoil.dto.incident.IncidentResolveRequestDTO;
 import com.example.cixoil.dto.incident.IncidentSaveDTO;
 import com.example.cixoil.enums.IncidentStatus;
 import com.example.cixoil.exception.BusinessException;
@@ -98,18 +99,34 @@ public class IncidentService {
         existent.setIncidentCategory(incidentCategory);
         existent.setReference(dto.reference());
         existent.setFullTitle(generateFullTitle(existent.getTitle(), existent.getReference()));
+        existent.setResolutionNote(dto.resolutionNote());
 
         return incidentMapper.toDTO(incidentRepository.save(existent));
     }
 
     @Transactional
-    public IncidentDTO resolve(Long id) {
+    public IncidentDTO inProcess(Long id) {
+        Incident incident = requireIncidentById(id, "No se encontró incidente para marcar como en proceso");
+
+        tryChangeStatusTo(incident, IncidentStatus.IN_PROCESS,
+                "Este incidente no está abierto para iniciar proceso");
+
+        return incidentMapper.toDTO(incidentRepository.save(incident));
+    }
+
+
+    // TODO: Usar métodos del Enum
+    @Transactional
+    public IncidentDTO resolve(Long id, IncidentResolveRequestDTO dto) {
         Incident incident = requireIncidentById(id, "No se encontró incidente para empezar");
 
-        if (incident.getIncidentStatus() != IncidentStatus.OPEN)
+        if (incident.getIncidentStatus() != IncidentStatus.OPEN
+                && incident.getIncidentStatus() != IncidentStatus.IN_PROCESS)
             throw new BusinessException("Este incidente no está abierto");
 
         incident.setIncidentStatus(IncidentStatus.RESOLVED);
+        incident.setResolutionNote(dto.resolutionNote());
+
         return incidentMapper.toDTO(incidentRepository.save(incident));
     }
 
@@ -146,6 +163,13 @@ public class IncidentService {
         return incidentMapper.toDTO(incidentRepository.save(incident));
     }
 
+    @Transactional
+    public IncidentDTO next(Long id) {
+        Incident incident = requireIncidentById(id, "No se encontró incidente");
+        incident.setIncidentStatus(incident.getIncidentStatus().next());
+        return incidentMapper.toDTO(incidentRepository.save(incident));
+    }
+
     // Require
 
     public Incident requireIncidentById(Long id) {
@@ -158,12 +182,23 @@ public class IncidentService {
                 .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
     }
 
-    // Validations
+    // Others
 
     private String generateFullTitle(String title, String reference) {
         if (!ValidationUtil.hasText(title) || !ValidationUtil.hasText(reference))
             return null;
 
         return String.format("[%s] %s", reference, title);
+    }
+
+    private void tryChangeStatusTo(
+            Incident incident,
+            IncidentStatus newStatus,
+            String onFailMessage
+    ) {
+        if (!incident.getIncidentStatus().canChangeTo(newStatus))
+            throw new BusinessException(onFailMessage);
+
+        incident.setIncidentStatus(newStatus);
     }
 }

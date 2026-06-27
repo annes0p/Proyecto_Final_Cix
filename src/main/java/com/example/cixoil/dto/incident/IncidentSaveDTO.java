@@ -9,6 +9,7 @@ public record IncidentSaveDTO(
         String description,
         String reportedBy,
         Long idIncidentCategory,
-        String reference
+        String reference,
+        String resolutionNote
 ) {
 }
