@@ -19,7 +19,7 @@ public class InventoryController {
 
     @GetMapping
     public ResponseEntity<?> listAll() {
-        List<InventoryDTO> data = inventoryService.listAll();
+        List<InventoryDTO> data = inventoryService.listAllForNotDeletedProducts();
         return ResponseUtil.ok("Inventarios encontrados exitosamente", data);
     }
 

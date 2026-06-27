@@ -2,6 +2,7 @@ package com.example.cixoil.service;
 
 import com.example.cixoil.dto.inventory.InventoryDTO;
 import com.example.cixoil.dto.inventory.InventorySaveDTO;
+import com.example.cixoil.enums.Status;
 import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.InventoryMapper;
@@ -27,6 +28,12 @@ public class InventoryService {
     @Transactional(readOnly = true)
     public List<InventoryDTO> listAll() {
         return inventoryRepository.findAll()
+                .stream().map(inventoryMapper::toDTO).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<InventoryDTO> listAllForNotDeletedProducts() {
+        return inventoryRepository.findAllByProduct_StatusNot(Status.DELETED.getValue())
                 .stream().map(inventoryMapper::toDTO).toList();
     }
 
