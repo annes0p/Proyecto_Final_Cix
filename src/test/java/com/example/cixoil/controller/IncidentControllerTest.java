@@ -44,7 +44,8 @@ class IncidentControllerTest extends BaseControllerTest {
                 new IncidentCategoryRefDTO(1L, "IncidentCategory"),
                 "REF-100",
                 IncidentStatus.OPEN,
-                "[REF-100] Test MVC"
+                "[REF-100] Test MVC",
+                "Note"
         );
 
         Mockito.when(incidentService.getById(1L))
