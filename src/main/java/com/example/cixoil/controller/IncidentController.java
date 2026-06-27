@@ -1,5 +1,6 @@
 package com.example.cixoil.controller;
 
+import com.example.cixoil.dto.incident.IncidentResolveRequestDTO;
 import com.example.cixoil.dto.incident.IncidentSaveDTO;
 import com.example.cixoil.service.IncidentService;
 import com.example.cixoil.utils.ResponseUtil;
@@ -62,11 +63,19 @@ public class IncidentController {
         );
     }
 
+    @PatchMapping("/{id}/in-process")
+    public ResponseEntity<?> inProcess(@PathVariable Long id) {
+        return ResponseUtil.ok(
+                "Incidente ha sido marcado como 'En proceso' correctamente",
+                incidentService.inProcess(id)
+        );
+    }
+
     @PatchMapping("/{id}/resolve")
-    public ResponseEntity<?> resolve(@PathVariable Long id) {
+    public ResponseEntity<?> resolve(@RequestBody IncidentResolveRequestDTO dto, @PathVariable Long id) {
         return ResponseUtil.ok(
                 "Incidente resuelto correctamente",
-                incidentService.resolve(id)
+                incidentService.resolve(id, dto)
         );
     }
 
