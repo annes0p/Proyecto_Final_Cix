@@ -34,6 +34,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/api/recommendations").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/vehicles/models/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/vehicles/units/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/selects/vehicle-uses").permitAll()
             .anyRequest().authenticated())
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
