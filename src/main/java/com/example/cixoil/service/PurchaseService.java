@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,31 +63,39 @@ public class PurchaseService {
 
         Purchase created = builder.build();
         details.forEach(created::addDetail);
-        List<StockMovementSaveDTO> movements = stockMovementService.generatePurchaseMovements(
-                details, created.getPurchasedAt().atStartOfDay());
 
         purchaseRepository.save(created);
-        stockMovementService.saveAll(movements);
 
         return purchaseMapper.toDTO(created);
     }
 
     @Transactional
     public PurchaseDTO receive(Long id) {
-        Purchase purchase = requirePurchaseById(id, "No se encontró la compra");
+        Purchase purchase = requirePurchaseById(id, "No se encontro la compra");
         purchase.setReceptionStatus(ReceptionStatus.RECEIVED);
-        return purchaseMapper.toDTO(purchaseRepository.save(purchase));
+
+        List<StockMovementSaveDTO> movements = stockMovementService.generatePurchaseMovements(
+                purchase.getDetails(), LocalDateTime.now());
+
+        Purchase saved = purchaseRepository.save(purchase);
+        stockMovementService.saveAll(movements);
+
+        return purchaseMapper.toDTO(saved);
     }
 
     @Transactional
     public PurchaseDTO partiallyReceive(Long id) {
-        Purchase purchase = requirePurchaseById(id, "No se encontró la compra");
+        Purchase purchase = requirePurchaseById(id, "No se encontro la compra");
         purchase.setReceptionStatus(ReceptionStatus.PARTIALLY_RECEIVED);
-        return purchaseMapper.toDTO(purchaseRepository.save(purchase));
+
+        List<StockMovementSaveDTO> movements = stockMovementService.generatePurchaseMovements(
+                purchase.getDetails(), LocalDateTime.now());
+
+        Purchase saved = purchaseRepository.save(purchase);
+        stockMovementService.saveAll(movements);
+
+        return purchaseMapper.toDTO(saved);
     }
-
-
-    // Require
 
     private Purchase requirePurchaseById(Long id, String errorMessage) {
         return purchaseRepository.findById(id)
