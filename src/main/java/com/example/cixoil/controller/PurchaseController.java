@@ -1,5 +1,6 @@
 package com.example.cixoil.controller;
 
+import com.example.cixoil.dto.purchase.PartialReceiveDTO;
 import com.example.cixoil.dto.purchase.PurchaseDTO;
 import com.example.cixoil.dto.purchase.PurchaseSaveDTO;
 import com.example.cixoil.service.PurchaseService;
@@ -42,8 +43,8 @@ public class PurchaseController {
     }
 
     @PatchMapping("/{id}/partially-receive")
-    public ResponseEntity<?> partiallyReceive(@PathVariable Long id) {
-        PurchaseDTO data = purchaseService.partiallyReceive(id);
+    public ResponseEntity<?> partiallyReceive(@PathVariable Long id, @RequestBody PartialReceiveDTO dto) {
+        PurchaseDTO data = purchaseService.partiallyReceive(id, dto);
         return ResponseUtil.ok("Compra parcialmente recibida", data);
     }
 }

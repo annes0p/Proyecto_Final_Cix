@@ -1,5 +1,6 @@
 package com.example.cixoil.service;
 
+import com.example.cixoil.dto.purchase.PartialReceiveDTO;
 import com.example.cixoil.dto.purchase.PurchaseDTO;
 import com.example.cixoil.dto.purchase.PurchaseSaveDTO;
 import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
@@ -84,12 +85,12 @@ public class PurchaseService {
     }
 
     @Transactional
-    public PurchaseDTO partiallyReceive(Long id) {
+    public PurchaseDTO partiallyReceive(Long id, PartialReceiveDTO dto) {
         Purchase purchase = requirePurchaseById(id, "No se encontro la compra");
         purchase.setReceptionStatus(ReceptionStatus.PARTIALLY_RECEIVED);
 
-        List<StockMovementSaveDTO> movements = stockMovementService.generatePurchaseMovements(
-                purchase.getDetails(), LocalDateTime.now());
+        List<StockMovementSaveDTO> movements = stockMovementService.generatePartialPurchaseMovements(
+                dto.items(), LocalDateTime.now());
 
         Purchase saved = purchaseRepository.save(purchase);
         stockMovementService.saveAll(movements);

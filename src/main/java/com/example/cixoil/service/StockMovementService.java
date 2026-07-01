@@ -1,5 +1,6 @@
 package com.example.cixoil.service;
 
+import com.example.cixoil.dto.purchase.PartialReceiveItemDTO;
 import com.example.cixoil.dto.stockmovement.StockMovementDTO;
 import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
 import com.example.cixoil.enums.StockMovementType;
@@ -21,7 +22,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class StockMovementService {
-    
+
     private final StockMovementRepository stockMovementRepository;
     private final StockMovementMapper stockMovementMapper;
     private final ProductRepository productRepository;
@@ -44,11 +45,10 @@ public class StockMovementService {
 
         ValidationUtil.validateQuantity(dto.quantity());
 
-        Product product = requireProductById(dto.idProduct(), "No se encontró producto");
+        Product product = requireProductById(dto.idProduct(), "No se encontro producto");
         Inventory inventory = inventoryService.findOrCreateInventoryByProductId(product.getId());
 
         Long initialStock = inventory.getStock();
-
         Long finalStock = initialStock;
 
         if (dto.stockMovementType().isAddition()) {
@@ -65,10 +65,9 @@ public class StockMovementService {
                 .finalStock(finalStock)
                 .stockMovementType(dto.stockMovementType());
 
-        if (dto.movementDate() != null) builder.movementDate(dto.movementDate()); // TODO: Cambiar en otros defautls
+        if (dto.movementDate() != null) builder.movementDate(dto.movementDate());
 
         StockMovement created = builder.build();
-
         inventoryService.updateStock(inventory, finalStock);
 
         return stockMovementMapper.toDTO(stockMovementRepository.save(created));
@@ -80,6 +79,18 @@ public class StockMovementService {
                 .map(d -> new StockMovementSaveDTO(
                         d.getProduct().getId(),
                         d.getQuantity(),
+                        StockMovementType.IN,
+                        date)
+                )
+                .toList();
+    }
+
+    public List<StockMovementSaveDTO> generatePartialPurchaseMovements(List<PartialReceiveItemDTO> items, LocalDateTime date) {
+        return items
+                .stream()
+                .map(item -> new StockMovementSaveDTO(
+                        item.idProduct(),
+                        item.quantity(),
                         StockMovementType.IN,
                         date)
                 )
@@ -114,8 +125,6 @@ public class StockMovementService {
     public void saveAll(List<StockMovementSaveDTO> movements) {
         movements.forEach(this::create);
     }
-
-    // Require
 
     private StockMovement requireMovementById(Long id, String errorMessage) {
         return stockMovementRepository.findById(id)
