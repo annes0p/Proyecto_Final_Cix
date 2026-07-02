@@ -4,13 +4,16 @@ import com.example.cixoil.dto.client.ClientDTO;
 import com.example.cixoil.dto.client.ClientSaveDTO;
 import com.example.cixoil.dto.sale.SaleDTO;
 import com.example.cixoil.dto.vehicleunit.VehicleUnitDTO;
+import com.example.cixoil.enums.DocumentType;
 import com.example.cixoil.enums.Status;
+import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.ClientMapper;
 import com.example.cixoil.model.Client;
 import com.example.cixoil.model.Location;
 import com.example.cixoil.repository.ClientRepository;
 import com.example.cixoil.repository.LocationRepository;
+import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +55,8 @@ public class ClientService {
     @Transactional
     public ClientDTO create(ClientSaveDTO dto) {
 
+        validateClientData(dto, null);
+
         Client created = Client.builder()
                 .name(dto.name())
                 .fatherLastName(dto.fatherLastName())
@@ -76,6 +81,8 @@ public class ClientService {
     @Transactional
     public ClientDTO update(ClientSaveDTO dto, Long id) {
         Client existent = requireClientById(id, "Cliente no encontrado para actualizar");
+
+        validateClientData(dto, id);
 
         existent.setName(dto.name());
         existent.setFatherLastName(dto.fatherLastName());
@@ -124,5 +131,35 @@ public class ClientService {
     private Location requireLocationById(Long id, String errorMessage) {
         return locationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
+    }
+
+    // Validaciones
+
+    private void validateClientData(ClientSaveDTO dto, Long idExcluido) {
+        if (!ValidationUtil.hasText(dto.name()))
+            throw new BusinessException("El nombre del cliente es obligatorio");
+
+        if (dto.documentType() == null)
+            throw new BusinessException("El tipo de documento es obligatorio");
+
+        if (!ValidationUtil.hasText(dto.docNumber()))
+            throw new BusinessException("El número de documento es obligatorio");
+
+        if (!dto.docNumber().matches("\\d+"))
+            throw new BusinessException("El número de documento solo debe contener números");
+
+        int largoEsperado = dto.documentType() == DocumentType.RUC ? 11 : 8;
+        if (dto.docNumber().length() != largoEsperado)
+            throw new BusinessException(
+                    "El " + dto.documentType().getValue() + " debe tener " + largoEsperado + " dígitos"
+            );
+
+        if (ValidationUtil.hasText(dto.email()) && !dto.email().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"))
+            throw new BusinessException("El email no tiene un formato válido");
+
+        clientRepository.findByDocNumber(dto.docNumber()).ifPresent(existing -> {
+            if (idExcluido == null || !existing.getId().equals(idExcluido))
+                throw new BusinessException("Ya existe un cliente registrado con ese número de documento");
+        });
     }
 }

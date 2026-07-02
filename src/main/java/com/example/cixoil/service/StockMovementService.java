@@ -76,13 +76,19 @@ public class StockMovementService {
     public List<StockMovementSaveDTO> generatePurchaseMovements(List<PurchaseDetail> details, LocalDateTime date) {
         return details
                 .stream()
+                .filter(d -> pendienteDeRecibir(d) > 0)
                 .map(d -> new StockMovementSaveDTO(
                         d.getProduct().getId(),
-                        d.getQuantity(),
+                        pendienteDeRecibir(d),
                         StockMovementType.IN,
                         date)
                 )
                 .toList();
+    }
+
+    private long pendienteDeRecibir(PurchaseDetail detail) {
+        long yaRecibido = detail.getReceivedQuantity() == null ? 0 : detail.getReceivedQuantity();
+        return detail.getQuantity() - yaRecibido;
     }
 
     public List<StockMovementSaveDTO> generatePartialPurchaseMovements(List<PartialReceiveItemDTO> items, LocalDateTime date) {

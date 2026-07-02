@@ -4,10 +4,12 @@ import com.example.cixoil.dto.SelectDTO;
 import com.example.cixoil.dto.category.CategoryDTO;
 import com.example.cixoil.dto.category.CategorySaveDTO;
 import com.example.cixoil.enums.Status;
+import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.CategoryMapper;
 import com.example.cixoil.model.Category;
 import com.example.cixoil.repository.CategoryRepository;
+import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +46,8 @@ public class CategoryService {
 
     @Transactional
     public CategoryDTO create(CategorySaveDTO dto) {
+        validateCategoryData(dto);
+
         Category created = Category.builder()
                 .name(dto.name())
                 .description(dto.description())
@@ -55,6 +59,8 @@ public class CategoryService {
     @Transactional
     public CategoryDTO update(CategorySaveDTO dto, Long id) {
         Category existent = requireCategoryById(id);
+
+        validateCategoryData(dto);
 
         existent.setName(dto.name());
         existent.setDescription(dto.description());
@@ -86,5 +92,12 @@ public class CategoryService {
     private Category requireCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
+    }
+
+    // Validaciones
+
+    private void validateCategoryData(CategorySaveDTO dto) {
+        if (!ValidationUtil.hasText(dto.name()))
+            throw new BusinessException("El nombre de la categoría es obligatorio");
     }
 }

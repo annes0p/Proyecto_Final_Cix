@@ -4,6 +4,7 @@ import com.example.cixoil.dto.CloudinaryUploadResult;
 import com.example.cixoil.dto.product.ProductDTO;
 import com.example.cixoil.dto.product.ProductSaveDTO;
 import com.example.cixoil.enums.Status;
+import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.ProductMapper;
 import com.example.cixoil.model.Category;
@@ -13,10 +14,12 @@ import com.example.cixoil.repository.CategoryRepository;
 import com.example.cixoil.repository.ProductBrandRepository;
 import com.example.cixoil.repository.ProductRepository;
 import com.example.cixoil.utils.CloudinaryFolders;
+import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -43,6 +46,8 @@ public class ProductService {
 
     @Transactional
     public ProductDTO create(ProductSaveDTO dto) {
+        validateProductData(dto);
+
         ProductBrand brand = requireBrandById(dto.idBrand());
         Category category = requireCategoryById(dto.idCategory());
 
@@ -72,6 +77,8 @@ public class ProductService {
     @Transactional
     public ProductDTO update(ProductSaveDTO dto, Long id) {
         Product existent = requireProductById(id);
+
+        validateProductData(dto);
 
         ProductBrand brand = requireBrandById(dto.idBrand());
         Category category = requireCategoryById(dto.idCategory());
@@ -135,5 +142,18 @@ public class ProductService {
     private ProductBrand requireBrandById(Long id) {
         return productBrandRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Marca de producto no encontrada"));
+    }
+
+    // Validaciones
+
+    private void validateProductData(ProductSaveDTO dto) {
+        if (!ValidationUtil.hasText(dto.name()))
+            throw new BusinessException("El nombre del producto es obligatorio");
+
+        if (dto.price() == null)
+            throw new BusinessException("El precio del producto es obligatorio");
+
+        if (dto.price().compareTo(BigDecimal.ZERO) < 0)
+            throw new BusinessException("El precio del producto no puede ser negativo");
     }
 }
