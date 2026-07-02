@@ -3,12 +3,15 @@ package com.example.cixoil.service;
 import com.example.cixoil.dto.product.ProductDTO;
 import com.example.cixoil.dto.supplier.SupplierDTO;
 import com.example.cixoil.dto.supplier.SupplierSaveDTO;
+import com.example.cixoil.enums.DocumentType;
 import com.example.cixoil.enums.Status;
+import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.ProductMapper;
 import com.example.cixoil.mapper.SupplierMapper;
 import com.example.cixoil.model.Supplier;
 import com.example.cixoil.repository.SupplierRepository;
+import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +48,8 @@ public class SupplierService {
     @Transactional
     public SupplierDTO create(SupplierSaveDTO dto) {
 
+        validateSupplierData(dto, null);
+
         Supplier created = Supplier.builder()
                 .legalName(dto.legalName())
                 .documentType(dto.documentType())
@@ -60,6 +65,8 @@ public class SupplierService {
     @Transactional
     public SupplierDTO update(SupplierSaveDTO dto, Long id) {
         Supplier existent = requireSupplierById(id, "Proveedor no encontrado para actualizar");
+
+        validateSupplierData(dto, id);
 
         existent.setLegalName(dto.legalName());
         existent.setDocumentType(dto.documentType());
@@ -94,5 +101,35 @@ public class SupplierService {
     private Supplier requireSupplierById(Long id, String errorMessage) {
         return supplierRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
+    }
+
+    // Validaciones
+
+    private void validateSupplierData(SupplierSaveDTO dto, Long idExcluido) {
+        if (!ValidationUtil.hasText(dto.legalName()))
+            throw new BusinessException("La razón social del proveedor es obligatoria");
+
+        if (dto.documentType() == null)
+            throw new BusinessException("El tipo de documento es obligatorio");
+
+        if (!ValidationUtil.hasText(dto.docNumber()))
+            throw new BusinessException("El número de documento es obligatorio");
+
+        if (!dto.docNumber().matches("\\d+"))
+            throw new BusinessException("El número de documento solo debe contener números");
+
+        int largoEsperado = dto.documentType() == DocumentType.RUC ? 11 : 8;
+        if (dto.docNumber().length() != largoEsperado)
+            throw new BusinessException(
+                    "El " + dto.documentType().getValue() + " debe tener " + largoEsperado + " dígitos"
+            );
+
+        if (ValidationUtil.hasText(dto.email()) && !dto.email().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"))
+            throw new BusinessException("El email no tiene un formato válido");
+
+        supplierRepository.findByDocNumber(dto.docNumber()).ifPresent(existing -> {
+            if (idExcluido == null || !existing.getId().equals(idExcluido))
+                throw new BusinessException("Ya existe un proveedor registrado con ese número de documento");
+        });
     }
 }

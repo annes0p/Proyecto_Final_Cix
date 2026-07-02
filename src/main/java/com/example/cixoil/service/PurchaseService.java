@@ -3,8 +3,10 @@ package com.example.cixoil.service;
 import com.example.cixoil.dto.purchase.PartialReceiveDTO;
 import com.example.cixoil.dto.purchase.PurchaseDTO;
 import com.example.cixoil.dto.purchase.PurchaseSaveDTO;
+import com.example.cixoil.dto.purchase.PartialReceiveItemDTO;
 import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
 import com.example.cixoil.enums.ReceptionStatus;
+import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.PurchaseMapper;
 import com.example.cixoil.model.Purchase;
@@ -73,10 +75,15 @@ public class PurchaseService {
     @Transactional
     public PurchaseDTO receive(Long id) {
         Purchase purchase = requirePurchaseById(id, "No se encontro la compra");
-        purchase.setReceptionStatus(ReceptionStatus.RECEIVED);
+
+        if (purchase.getReceptionStatus() == ReceptionStatus.RECEIVED)
+            throw new BusinessException("Esta orden ya fue recibida por completo");
 
         List<StockMovementSaveDTO> movements = stockMovementService.generatePurchaseMovements(
                 purchase.getDetails(), LocalDateTime.now());
+
+        purchase.getDetails().forEach(d -> d.setReceivedQuantity(d.getQuantity()));
+        purchase.setReceptionStatus(ReceptionStatus.RECEIVED);
 
         Purchase saved = purchaseRepository.save(purchase);
         stockMovementService.saveAll(movements);
@@ -87,7 +94,38 @@ public class PurchaseService {
     @Transactional
     public PurchaseDTO partiallyReceive(Long id, PartialReceiveDTO dto) {
         Purchase purchase = requirePurchaseById(id, "No se encontro la compra");
-        purchase.setReceptionStatus(ReceptionStatus.PARTIALLY_RECEIVED);
+
+        if (purchase.getReceptionStatus() == ReceptionStatus.RECEIVED)
+            throw new BusinessException("Esta orden ya fue recibida por completo");
+
+        if (dto.items() == null || dto.items().isEmpty())
+            throw new BusinessException("Debes indicar al menos un producto recibido");
+
+        for (PartialReceiveItemDTO item : dto.items()) {
+            if (item.idProduct() == null)
+                throw new BusinessException("Falta el producto en uno de los items recibidos");
+
+            if (item.quantity() == null || item.quantity() <= 0)
+                throw new BusinessException("La cantidad recibida debe ser mayor a 0");
+
+            PurchaseDetail detalle = requireDetailByProduct(purchase, item.idProduct());
+
+            long yaRecibido = detalle.getReceivedQuantity() == null ? 0 : detalle.getReceivedQuantity();
+            long pendiente = detalle.getQuantity() - yaRecibido;
+
+            if (item.quantity() > pendiente)
+                throw new BusinessException(
+                        "Solo faltan " + pendiente + " unidades de " + detalle.getProduct().getName()
+                                + ", no puedes recibir " + item.quantity()
+                );
+
+            detalle.setReceivedQuantity(yaRecibido + item.quantity());
+        }
+
+        boolean recibidoCompleto = purchase.getDetails().stream()
+                .allMatch(d -> (d.getReceivedQuantity() == null ? 0 : d.getReceivedQuantity()) >= d.getQuantity());
+
+        purchase.setReceptionStatus(recibidoCompleto ? ReceptionStatus.RECEIVED : ReceptionStatus.PARTIALLY_RECEIVED);
 
         List<StockMovementSaveDTO> movements = stockMovementService.generatePartialPurchaseMovements(
                 dto.items(), LocalDateTime.now());
@@ -106,5 +144,12 @@ public class PurchaseService {
     private Supplier requireSupplierById(Long id, String errorMessage) {
         return supplierRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
+    }
+
+    private PurchaseDetail requireDetailByProduct(Purchase purchase, Long idProduct) {
+        return purchase.getDetails().stream()
+                .filter(d -> d.getProduct().getId().equals(idProduct))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException("Ese producto no pertenece a esta orden de compra"));
     }
 }

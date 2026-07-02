@@ -29,6 +29,10 @@ public class PurchaseDetail {
     @Column(name = "quantity")
     private Long quantity;
 
+    @Builder.Default
+    @Column(name = "received_quantity")
+    private Long receivedQuantity = 0L;
+
     @Column(name = "unit_price")
     private BigDecimal unitPrice;
 

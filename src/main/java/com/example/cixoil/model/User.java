@@ -10,7 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@Table(name = "user")
+@Table(name = "`user`")
 public class User extends AuditableEntity {
 
     @Id
