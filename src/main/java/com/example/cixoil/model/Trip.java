@@ -32,6 +32,10 @@ public class Trip {
     @ManyToOne(fetch = FetchType.LAZY)
     private Location destination;
 
+    @JoinColumn(name = "id_sale")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Sale sale;
+
     @Column(name = "start_time")
     private LocalTime startTime;
 

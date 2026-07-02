@@ -10,6 +10,8 @@ public record TripSaveDTO(
         Long idOriginLocation,
 
         @NotNull(message = "El punto de destino es obligatorio")
-        Long idDestinationLocation
+        Long idDestinationLocation,
+
+        Long idSale
 ) {
 }

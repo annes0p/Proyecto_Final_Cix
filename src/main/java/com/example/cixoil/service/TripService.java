@@ -8,9 +8,11 @@ import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.TripMapper;
 import com.example.cixoil.model.Location;
 import com.example.cixoil.model.Route;
+import com.example.cixoil.model.Sale;
 import com.example.cixoil.model.Trip;
 import com.example.cixoil.repository.LocationRepository;
 import com.example.cixoil.repository.RouteRepository;
+import com.example.cixoil.repository.SaleRepository;
 import com.example.cixoil.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class TripService {
     private final RouteRepository routeRepository;
     private final RouteService routeService;
     private final LocationRepository locationRepository;
+    private final SaleRepository saleRepository;
 
     //TODO: Estandarizar
     @Transactional(readOnly = true)
@@ -47,11 +50,13 @@ public class TripService {
         Route route = requireRouteById(dto.idRoute(), "No se encontró ruta");
         Location origin = requireLocationById(dto.idOriginLocation(), "No se encontró lugar de origen");
         Location destination = requireLocationById(dto.idDestinationLocation(), "No se encontró lugar de destino");
+        Sale sale = resolveSale(dto.idSale());
 
         Trip created = Trip.builder()
                 .route(route)
                 .origin(origin)
                 .destination(destination)
+                .sale(sale)
                 .build();
 
         return tripMapper.toDTO(tripRepository.save(created));
@@ -64,10 +69,12 @@ public class TripService {
         Route route = requireRouteById(dto.idRoute(), "No se encontró ruta");
         Location origin = requireLocationById(dto.idOriginLocation(), "No se encontró lugar de origen");
         Location destination = requireLocationById(dto.idDestinationLocation(), "No se encontró lugar de destino");
+        Sale sale = resolveSale(dto.idSale());
 
         existent.setRoute(route);
         existent.setOrigin(origin);
         existent.setDestination(destination);
+        existent.setSale(sale);
 
         return tripMapper.toDTO(tripRepository.save(existent));
     }
@@ -175,6 +182,16 @@ public class TripService {
     private Location requireLocationById(Long id, String errorMessage) {
         return locationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
+    }
+
+    /**
+     * La venta ligada a un viaje es opcional (no toda parada entrega un pedido),
+     * por eso solo se busca si mandan un id.
+     */
+    private Sale resolveSale(Long idSale) {
+        if (idSale == null) return null;
+        return saleRepository.findById(idSale)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró la venta"));
     }
 
     // Resolve
