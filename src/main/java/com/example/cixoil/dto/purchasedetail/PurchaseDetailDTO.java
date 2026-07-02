@@ -8,6 +8,7 @@ public record PurchaseDetailDTO(
         Long id,
         ProductDTO product,
         Long quantity,
+        Long receivedQuantity,
         BigDecimal unitPrice,
         BigDecimal lineTotal
 ) {
