@@ -1,16 +1,26 @@
 package com.example.cixoil.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.cixoil.dto.route.RouteDTO;
 import com.example.cixoil.dto.route.RouteSaveDTO;
 import com.example.cixoil.dto.trip.TripDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.service.RouteService;
 import com.example.cixoil.utils.ResponseUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,13 +48,13 @@ public class RouteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody RouteSaveDTO dto) {
+    public ResponseEntity<?> create(@Valid @RequestBody RouteSaveDTO dto) {
         RouteDTO created = routeService.create(dto);
         return ResponseUtil.ok("Ruta creada correctamente", created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody RouteSaveDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody RouteSaveDTO dto, @PathVariable Long id) {
         RouteDTO updated = routeService.update(dto, id);
         return ResponseUtil.ok("Ruta actualizada correctamente", updated);
     }

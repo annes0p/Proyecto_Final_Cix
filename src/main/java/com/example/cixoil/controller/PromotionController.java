@@ -1,15 +1,25 @@
 package com.example.cixoil.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.cixoil.dto.promotion.PromotionDTO;
 import com.example.cixoil.dto.promotion.PromotionSaveDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.service.PromotionService;
 import com.example.cixoil.utils.ResponseUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,14 +41,14 @@ public class PromotionController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody PromotionSaveDTO dto) {
+    public ResponseEntity<?> create(@Valid @RequestBody PromotionSaveDTO dto) {
         PromotionDTO created = promotionService.create(dto);
         return ResponseUtil.ok("Promoción creada correctamente", created);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
-            @RequestBody PromotionSaveDTO dto,
+            @Valid @RequestBody PromotionSaveDTO dto,
             @PathVariable Long id
     ) {
         PromotionDTO updated = promotionService.update(dto, id);

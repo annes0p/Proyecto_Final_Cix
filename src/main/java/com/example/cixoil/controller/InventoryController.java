@@ -1,14 +1,23 @@
 package com.example.cixoil.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.cixoil.dto.inventory.InventoryDTO;
 import com.example.cixoil.dto.inventory.InventorySaveDTO;
 import com.example.cixoil.service.InventoryService;
 import com.example.cixoil.utils.ResponseUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,13 +45,13 @@ public class InventoryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody InventorySaveDTO dto) {
+    public ResponseEntity<?> create(@Valid @RequestBody InventorySaveDTO dto) {
         InventoryDTO data = inventoryService.create(dto);
         return ResponseUtil.ok("Inventario de producto encontrado exitosamente", data);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody InventorySaveDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody InventorySaveDTO dto, @PathVariable Long id) {
         InventoryDTO data = inventoryService.update(dto, id);
         return ResponseUtil.ok("Inventario de producto encontrado exitosamente", data);
     }

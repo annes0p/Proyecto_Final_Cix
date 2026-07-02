@@ -1,14 +1,22 @@
 package com.example.cixoil.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.cixoil.dto.stockmovement.StockMovementDTO;
 import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
 import com.example.cixoil.service.StockMovementService;
 import com.example.cixoil.utils.ResponseUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +38,7 @@ public class StockMovementController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody StockMovementSaveDTO dto) {
+    public ResponseEntity<?> create(@Valid @RequestBody StockMovementSaveDTO dto) {
         StockMovementDTO data = stockMovementService.create(dto);
         return ResponseUtil.ok("Movimiento de producto encontrado exitosamente", data);
     }

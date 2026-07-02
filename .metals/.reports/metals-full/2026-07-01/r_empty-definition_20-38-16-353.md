@@ -1,3 +1,14 @@
+error id: file:///C:/Users/Antony/Documents/Nueva%20carpeta%20(14)/Proyecto_Final_Cix/src/main/java/com/example/cixoil/dto/promotion/PromotionSaveDTO.java:
+file:///C:/Users/Antony/Documents/Nueva%20carpeta%20(14)/Proyecto_Final_Cix/src/main/java/com/example/cixoil/dto/promotion/PromotionSaveDTO.java
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 1323
+uri: file:///C:/Users/Antony/Documents/Nueva%20carpeta%20(14)/Proyecto_Final_Cix/src/main/java/com/example/cixoil/dto/promotion/PromotionSaveDTO.java
+text:
+```scala
 package com.example.cixoil.dto.promotion;
 
 import jakarta.validation.constraints.Max;
@@ -30,7 +41,7 @@ public record PromotionSaveDTO(
         @Max(value = 31, message = "El día de inicio debe estar entre 1 y 31")
         Integer startDay,
 
-        @Min(value = 1, message = "El mes de fin debe estar entre 1 y 12")
+        @Min(value@@ = 1, message = "El mes de fin debe estar entre 1 y 12")
         @Max(value = 12, message = "El mes de fin debe estar entre 1 y 12")
         Integer endMonth,
 
@@ -44,3 +55,10 @@ public record PromotionSaveDTO(
         Boolean autoActivate
 ) {
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 
