@@ -1,12 +1,22 @@
 package com.example.cixoil.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.cixoil.dto.incident.IncidentResolveRequestDTO;
 import com.example.cixoil.dto.incident.IncidentSaveDTO;
 import com.example.cixoil.service.IncidentService;
 import com.example.cixoil.utils.ResponseUtil;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +58,7 @@ public class IncidentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody IncidentSaveDTO dto) {
+    public ResponseEntity<?> create(@Valid @RequestBody IncidentSaveDTO dto) {
         return ResponseUtil.ok(
                 "Incidente creado correctamente",
                 incidentService.create(dto)
@@ -56,7 +66,7 @@ public class IncidentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody IncidentSaveDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody IncidentSaveDTO dto, @PathVariable Long id) {
         return ResponseUtil.ok(
                 "Incidente actualizado correctamente",
                 incidentService.update(dto, id)
@@ -72,7 +82,7 @@ public class IncidentController {
     }
 
     @PatchMapping("/{id}/resolve")
-    public ResponseEntity<?> resolve(@RequestBody IncidentResolveRequestDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> resolve(@Valid @RequestBody IncidentResolveRequestDTO dto, @PathVariable Long id) {
         return ResponseUtil.ok(
                 "Incidente resuelto correctamente",
                 incidentService.resolve(id, dto)

@@ -1,15 +1,25 @@
 package com.example.cixoil.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.cixoil.dto.product.ProductDTO;
 import com.example.cixoil.dto.product.ProductSaveDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.service.ProductService;
 import com.example.cixoil.utils.ResponseUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,13 +41,13 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@ModelAttribute ProductSaveDTO dto) {
+    public ResponseEntity<?> create(@Valid @ModelAttribute ProductSaveDTO dto) {
         ProductDTO created = productService.create(dto);
         return ResponseUtil.ok("Producto creado correctamente", created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@ModelAttribute ProductSaveDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @ModelAttribute ProductSaveDTO dto, @PathVariable Long id) {
         ProductDTO updated = productService.update(dto, id);
         return ResponseUtil.ok("Producto actualizado correctamente", updated);
     }
