@@ -104,17 +104,26 @@ public class RouteService {
 
         List<Trip> trips = route.getTrips();
 
-        boolean allCompleted = true;
+        if (trips.isEmpty()) {
+            route.setProgressStatus(ProgressStatus.PENDING);
+            return;
+        }
+
+        boolean allCanceled = true;
+        boolean allResolved = true;
         boolean anyProgress = false;
 
         for (Trip trip : trips) {
             ProgressStatus progress = trip.getProgressStatus();
 
-            if (progress != ProgressStatus.COMPLETED) allCompleted = false;
+            if (progress != ProgressStatus.CANCELED) allCanceled = false;
+            if (progress != ProgressStatus.COMPLETED && progress != ProgressStatus.CANCELED) allResolved = false;
             if (progress == ProgressStatus.IN_PROGRESS) anyProgress = true;
         }
 
-        if (allCompleted) {
+        if (allCanceled) {
+            route.setProgressStatus(ProgressStatus.CANCELED);
+        } else if (allResolved) {
             route.setProgressStatus(ProgressStatus.COMPLETED);
         } else if (anyProgress) {
             route.setProgressStatus(ProgressStatus.IN_PROGRESS);

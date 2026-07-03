@@ -19,11 +19,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TripService {
+
+    private static final ZoneId ZONA_PERU = ZoneId.of("America/Lima");
 
     private final TripRepository tripRepository;
     private final TripMapper tripMapper;
@@ -96,7 +99,7 @@ public class TripService {
 
         validateCanStart(existent.getProgressStatus());
 
-        existent.setStartTime(LocalTime.now());
+        existent.setStartTime(LocalTime.now(ZONA_PERU));
         existent.setProgressStatus(ProgressStatus.IN_PROGRESS);
 
         routeService.recalculateProgress(existent.getRoute().getId());
@@ -110,7 +113,7 @@ public class TripService {
 
         validateCanComplete(existent.getProgressStatus());
 
-        existent.setEndTime(LocalTime.now());
+        existent.setEndTime(LocalTime.now(ZONA_PERU));
         existent.setProgressStatus(ProgressStatus.COMPLETED);
 
         routeService.recalculateProgress(existent.getRoute().getId());
@@ -125,6 +128,8 @@ public class TripService {
         validateCanCancel(existent.getProgressStatus());
 
         existent.setProgressStatus(ProgressStatus.CANCELED);
+
+        routeService.recalculateProgress(existent.getRoute().getId());
 
         return tripMapper.toDTO(tripRepository.save(existent));
     }
