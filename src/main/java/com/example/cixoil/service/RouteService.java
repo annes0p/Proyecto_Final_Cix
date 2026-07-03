@@ -134,7 +134,7 @@ public class RouteService {
 
     // Require
 
-    private Route requireRouteById(Long id, String errorMessage) {
+    public Route requireRouteById(Long id, String errorMessage) {
         return routeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
     }

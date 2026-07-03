@@ -30,9 +30,10 @@ public class TripService {
 
     private final TripRepository tripRepository;
     private final TripMapper tripMapper;
-    private final RouteRepository routeRepository;
+//    private final RouteRepository routeRepository;
     private final RouteService routeService;
-    private final LocationRepository locationRepository;
+//    private final LocationRepository locationRepository;
+    private final LocationService locationService;
     private final SaleRepository saleRepository;
 
     //TODO: Estandarizar
@@ -50,9 +51,9 @@ public class TripService {
 
     @Transactional
     public TripDTO create(TripSaveDTO dto) {
-        Route route = requireRouteById(dto.idRoute(), "No se encontró ruta");
-        Location origin = requireLocationById(dto.idOriginLocation(), "No se encontró lugar de origen");
-        Location destination = requireLocationById(dto.idDestinationLocation(), "No se encontró lugar de destino");
+        Route route = routeService.requireRouteById(dto.idRoute(), "No se encontró ruta");
+        Location origin = locationService.requireLocationById(dto.idOriginLocation(), "No se encontró lugar de origen");
+        Location destination = locationService.requireLocationById(dto.idDestinationLocation(), "No se encontró lugar de destino");
         Sale sale = resolveSale(dto.idSale());
 
         Trip created = Trip.builder()
@@ -60,6 +61,7 @@ public class TripService {
                 .origin(origin)
                 .destination(destination)
                 .sale(sale)
+                .observation(dto.observation())
                 .build();
 
         return tripMapper.toDTO(tripRepository.save(created));
@@ -69,15 +71,16 @@ public class TripService {
     public TripDTO update(TripSaveDTO dto, Long id) {
         Trip existent = requireTripById(id, "No se encontró viaje para actualizar");
 
-        Route route = requireRouteById(dto.idRoute(), "No se encontró ruta");
-        Location origin = requireLocationById(dto.idOriginLocation(), "No se encontró lugar de origen");
-        Location destination = requireLocationById(dto.idDestinationLocation(), "No se encontró lugar de destino");
+        Route route = routeService.requireRouteById(dto.idRoute(), "No se encontró ruta");
+        Location origin = locationService.requireLocationById(dto.idOriginLocation(), "No se encontró lugar de origen");
+        Location destination = locationService.requireLocationById(dto.idDestinationLocation(), "No se encontró lugar de destino");
         Sale sale = resolveSale(dto.idSale());
 
         existent.setRoute(route);
         existent.setOrigin(origin);
         existent.setDestination(destination);
         existent.setSale(sale);
+        existent.setObservation(dto.observation());
 
         return tripMapper.toDTO(tripRepository.save(existent));
     }
@@ -179,15 +182,16 @@ public class TripService {
                 .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
     }
 
-    private Route requireRouteById(Long id, String errorMessage) {
-        return routeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
-    }
+    // Mejor usar los correspondientes a cada service
+//    private Route requireRouteById(Long id, String errorMessage) {
+//        return routeRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
+//    }
 
-    private Location requireLocationById(Long id, String errorMessage) {
-        return locationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
-    }
+//    private Location requireLocationById(Long id, String errorMessage) {
+//        return locationRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
+//    }
 
     /**
      * La venta ligada a un viaje es opcional (no toda parada entrega un pedido),

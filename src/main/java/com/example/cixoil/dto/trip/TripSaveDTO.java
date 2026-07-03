@@ -12,6 +12,8 @@ public record TripSaveDTO(
         @NotNull(message = "El punto de destino es obligatorio")
         Long idDestinationLocation,
 
-        Long idSale
+        Long idSale,
+
+        String observation
 ) {
 }

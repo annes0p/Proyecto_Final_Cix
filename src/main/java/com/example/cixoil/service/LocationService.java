@@ -5,6 +5,7 @@ import com.example.cixoil.dto.location.LocationDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.LocationMapper;
+import com.example.cixoil.model.Location;
 import com.example.cixoil.repository.LocationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,5 +38,12 @@ public class LocationService {
                 .stream()
                 .map(e -> new SelectDTO<>(e.getId(), e.getName()))
                 .toList();
+    }
+
+    // Require
+
+    public Location requireLocationById(Long id, String errorMessage) {
+        return locationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(errorMessage));
     }
 }

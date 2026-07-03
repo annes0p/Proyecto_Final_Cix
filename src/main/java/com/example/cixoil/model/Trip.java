@@ -50,4 +50,7 @@ public class Trip {
     @Builder.Default
     @Column(name = "status")
     private Integer status = Status.ACTIVE.getValue();
+
+    @Column(name = "observation", length = 500)
+    private String observation;
 }
