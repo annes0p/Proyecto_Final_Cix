@@ -12,7 +12,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     Optional<Location> findByNormalizedName(String name);
 
-    Optional<Location> findByNormalizedNameContains(String text);
+    List<Location> findByNormalizedNameContainingIgnoreCaseAndStatusNot(String text, Integer status);
+    List<Location> findByNormalizedNameContainingIgnoreCaseAndStatus(String text, Integer status);
 
     List<Location> findAllByStatusNot(Integer status);
 }

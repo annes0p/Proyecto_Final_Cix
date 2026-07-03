@@ -5,6 +5,7 @@ import com.example.cixoil.dto.location.LocationSaveDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.service.LocationService;
 import com.example.cixoil.utils.ResponseUtil;
+import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +20,29 @@ public class LocationController {
 
     private final LocationService locationService;
 
-    @GetMapping
-    public ResponseEntity<?> listAll() {
-        List<LocationDTO> data = locationService.findAllNotDeleted();
-        return ResponseUtil.ok("Lugares encontrados", data);
-    }
+//    @GetMapping
+//    public ResponseEntity<?> listAll() {
+//        List<LocationDTO> data = locationService.findAllNotDeleted();
+//        return ResponseUtil.ok("Lugares encontrados", data);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         LocationDTO existent = locationService.getById(id);
-        return ResponseUtil.ok("Lugar obtenido correctamente", existent);
+        return ResponseUtil.ok("Localizaciones obtenidas correctamente", existent);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> list(@RequestParam(required = false) String search) {
+        if (!ValidationUtil.hasText(search)) {
+            return ResponseUtil.ok(
+                    "Localizaciones encontradas correctamente",
+                    locationService.findAllNotDeleted());
+        }
+
+        return ResponseUtil.ok(
+                "Localizaciones buscadas correctamente",
+                locationService.searchByNameLike(search));
     }
 
     @PostMapping

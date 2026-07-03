@@ -10,6 +10,7 @@ import com.example.cixoil.mapper.LocationMapper;
 import com.example.cixoil.model.Location;
 import com.example.cixoil.repository.LocationRepository;
 import com.example.cixoil.utils.TextUtil;
+import com.example.cixoil.utils.ValidationUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,18 @@ public class LocationService {
     public LocationDTO getById(Long id) {
         return locationRepository.findById(id).map(locationMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Lugar no encontrado"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<LocationDTO> searchByNameLike(String name) {
+
+        if (!ValidationUtil.hasText(name))
+            return findAllNotDeleted();
+
+        // Solo activos
+        return locationRepository
+                .findByNormalizedNameContainingIgnoreCaseAndStatus(name, Status.ACTIVE.getValue())
+                .stream().map(locationMapper::toDTO).toList();
     }
 
     @Transactional(readOnly = true)
