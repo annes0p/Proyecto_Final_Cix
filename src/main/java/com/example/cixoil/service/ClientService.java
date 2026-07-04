@@ -15,6 +15,7 @@ import com.example.cixoil.repository.ClientRepository;
 import com.example.cixoil.repository.LocationRepository;
 import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +77,36 @@ public class ClientService {
                 .build();
 
         return clientMapper.toDTO(clientRepository.save(created));
+    }
+
+    /**
+     * Busca un cliente por docNumber y, si no existe, lo crea. Pensado para
+     * los flujos publicos (Tienda, portal del cliente) donde no hay login
+     * y hay que reconocer/crear al cliente en el momento.
+     *
+     * A prueba de condicion de carrera: si dos peticiones casi simultaneas
+     * (ej. doble clic en "Pagar") intentan crear el mismo docNumber nuevo,
+     * la validacion de create() no alcanza a detectar la otra porque
+     * todavia no hizo commit. Antes esto generaba clientes duplicados
+     * (mismo docNumber, dos filas). Ahora, si el insert choca con la
+     * restriccion UNIQUE de la base de datos, se atrapa el error y se
+     * reutiliza el cliente que gano la carrera, en vez de fallar o
+     * duplicar.
+     */
+    @Transactional
+    public Client findOrCreateEntity(ClientSaveDTO dto) {
+        return clientRepository.findByDocNumber(dto.docNumber())
+                .orElseGet(() -> {
+                    try {
+                        Long idCreado = create(dto).id();
+                        return clientRepository.findById(idCreado)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                        "No se pudo registrar el cliente"));
+                    } catch (DataIntegrityViolationException e) {
+                        return clientRepository.findByDocNumber(dto.docNumber())
+                                .orElseThrow(() -> e);
+                    }
+                });
     }
 
     @Transactional

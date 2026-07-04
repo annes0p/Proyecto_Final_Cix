@@ -15,12 +15,10 @@ import com.example.cixoil.dto.publicsale.PublicSaleResponseDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.enums.TransactionStatus;
 import com.example.cixoil.enums.VoucherType;
-import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.model.Client;
 import com.example.cixoil.model.Product;
 import com.example.cixoil.model.Sale;
 import com.example.cixoil.model.SaleDetail;
-import com.example.cixoil.repository.ClientRepository;
 import com.example.cixoil.repository.ProductRepository;
 import com.example.cixoil.repository.SaleRepository;
 
@@ -32,16 +30,17 @@ import lombok.RequiredArgsConstructor;
  * repositorios y, para clientes nuevos, ClientService.create para no
  * duplicar validaciones) para no interferir con esos flujos internos:
  * no genera correlativo de comprobante, no mueve stock ni requiere
- * usuario logueado. La venta queda PENDING para que el personal la
- * revise, confirme el pago y recién ahí la procese como una venta
- * normal (boleta/factura) desde el sistema interno.
+ * usuario logueado. El pago (por ahora simulado, pendiente de conectar
+ * una pasarela real como Culqi) se procesa en el checkout de la Tienda
+ * antes de llegar aquí, por eso la venta ya se registra como COMPLETED
+ * en vez de quedar PENDING: el cliente paga en el momento, no el
+ * personal despues. El personal solo se encarga de coordinar el envio.
  */
 @Service
 @RequiredArgsConstructor
 public class PublicSaleService {
 
     private final ProductRepository productRepository;
-    private final ClientRepository clientRepository;
     private final ClientService clientService;
     private final SaleDetailService saleDetailService;
     private final SaleRepository saleRepository;
@@ -57,8 +56,7 @@ public class PublicSaleService {
 
     @Transactional
     public PublicSaleResponseDTO crearVentaPublica(PublicSaleRequestDTO dto) {
-        Client client = clientRepository.findByDocNumber(dto.docNumber())
-                .orElseGet(() -> crearClienteNuevo(dto));
+        Client client = clientService.findOrCreateEntity(construirClienteDto(dto));
 
         List<SaleDetail> details = new ArrayList<>(dto.items()
                 .stream().map(saleDetailService::build).toList());
@@ -71,7 +69,8 @@ public class PublicSaleService {
                 .client(client)
                 .user(null)
                 .voucherType(VoucherType.SALE_NOTE)
-                .transactionStatus(TransactionStatus.PENDING)
+                .transactionStatus(TransactionStatus.COMPLETED)
+                .paymentMethod(dto.paymentMethod())
                 .subtotal(subtotal)
                 .taxAmount(taxAmount)
                 .total(total)
@@ -84,14 +83,14 @@ public class PublicSaleService {
         return new PublicSaleResponseDTO(
                 created.getId(),
                 total,
-                "¡Pedido registrado! Nos pondremos en contacto contigo para confirmar el pago y la entrega."
+                "¡Pago aprobado! Tu pedido fue registrado, pronto coordinaremos la entrega."
         );
     }
 
     // Privados
 
-    private Client crearClienteNuevo(PublicSaleRequestDTO dto) {
-        ClientSaveDTO clientDto = new ClientSaveDTO(
+    private ClientSaveDTO construirClienteDto(PublicSaleRequestDTO dto) {
+        return new ClientSaveDTO(
                 dto.name(),
                 dto.fatherLastName(),
                 dto.motherLastName(),
@@ -103,11 +102,6 @@ public class PublicSaleService {
                 dto.address(),
                 false
         );
-
-        Long idClienteCreado = clientService.create(clientDto).id();
-
-        return clientRepository.findById(idClienteCreado)
-                .orElseThrow(() -> new ResourceNotFoundException("No se pudo registrar el cliente"));
     }
 
     private PublicProductDTO toPublicProductDTO(Product p) {

@@ -13,7 +13,6 @@ import com.example.cixoil.dto.publicsale.PublicClientOrderDTO;
 import com.example.cixoil.dto.publicsale.PublicIncidentReportRequestDTO;
 import com.example.cixoil.enums.IncidentStatus;
 import com.example.cixoil.enums.Priority;
-import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.model.Client;
 import com.example.cixoil.model.Incident;
 import com.example.cixoil.model.IncidentCategory;
@@ -115,8 +114,7 @@ public class PublicClientPortalService {
 
     @Transactional
     public PublicClientIncidentDTO reportarIncidencia(PublicIncidentReportRequestDTO dto) {
-        Client client = clientRepository.findByDocNumber(dto.docNumber())
-                .orElseGet(() -> crearClienteNuevo(dto));
+        Client client = clientService.findOrCreateEntity(construirClienteDto(dto));
 
         IncidentType incidentType = incidentTypeService.requireIncidentTypeById(
                 dto.idIncidentType(), "No se encontró el tipo de incidencia");
@@ -151,8 +149,8 @@ public class PublicClientPortalService {
         );
     }
 
-    private Client crearClienteNuevo(PublicIncidentReportRequestDTO dto) {
-        ClientSaveDTO clientDto = new ClientSaveDTO(
+    private ClientSaveDTO construirClienteDto(PublicIncidentReportRequestDTO dto) {
+        return new ClientSaveDTO(
                 dto.name(),
                 dto.fatherLastName(),
                 dto.motherLastName(),
@@ -164,10 +162,5 @@ public class PublicClientPortalService {
                 dto.address(),
                 false
         );
-
-        Long idClienteCreado = clientService.create(clientDto).id();
-
-        return clientRepository.findById(idClienteCreado)
-                .orElseThrow(() -> new ResourceNotFoundException("No se pudo registrar el cliente"));
     }
 }
