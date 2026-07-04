@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cixoil.dto.publicsale.PublicClientIncidentDTO;
+import com.example.cixoil.dto.publicsale.PublicClientLookupDTO;
 import com.example.cixoil.dto.publicsale.PublicClientOrderDTO;
 import com.example.cixoil.dto.publicsale.PublicIncidentReportRequestDTO;
 import com.example.cixoil.service.PublicClientPortalService;
@@ -30,6 +31,12 @@ import lombok.RequiredArgsConstructor;
 public class PublicClientPortalController {
 
     private final PublicClientPortalService publicClientPortalService;
+
+    @GetMapping("/{docNumber}/lookup")
+    public ResponseEntity<?> getClienteExistente(@PathVariable String docNumber) {
+        PublicClientLookupDTO data = publicClientPortalService.buscarClienteExistente(docNumber);
+        return ResponseUtil.ok("Consulta realizada", data);
+    }
 
     @GetMapping("/{docNumber}/orders")
     public ResponseEntity<?> getPedidos(@PathVariable String docNumber) {

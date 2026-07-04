@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.cixoil.dto.client.ClientSaveDTO;
 import com.example.cixoil.dto.publicsale.PublicClientIncidentDTO;
+import com.example.cixoil.dto.publicsale.PublicClientLookupDTO;
 import com.example.cixoil.dto.publicsale.PublicClientOrderDTO;
 import com.example.cixoil.dto.publicsale.PublicIncidentReportRequestDTO;
 import com.example.cixoil.enums.IncidentStatus;
@@ -46,6 +47,25 @@ public class PublicClientPortalService {
     private final ClientRepository clientRepository;
     private final ClientService clientService;
     private final IncidentTokenUtil incidentTokenUtil;
+
+    // Usado por la tienda y el formulario de incidencias para
+    // reconocer a un cliente que ya compro antes y no pedirle de
+    // nuevo nombre/telefono/direccion.
+    @Transactional(readOnly = true)
+    public PublicClientLookupDTO buscarClienteExistente(String docNumber) {
+        return clientRepository.findByDocNumber(docNumber)
+                .map(c -> new PublicClientLookupDTO(
+                        true,
+                        c.getName(),
+                        c.getFatherLastName(),
+                        c.getMotherLastName(),
+                        c.getDocumentType() != null ? c.getDocumentType().name() : null,
+                        c.getPhoneNumber(),
+                        c.getEmail(),
+                        c.getAddress()
+                ))
+                .orElse(new PublicClientLookupDTO(false, null, null, null, null, null, null, null));
+    }
 
     @Transactional(readOnly = true)
     public List<PublicClientOrderDTO> buscarPedidos(String docNumber) {
