@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.cixoil.dto.saledetail.SaleDetailSaveDTO;
 import com.example.cixoil.enums.DocumentType;
+import com.example.cixoil.enums.PaymentMethod;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -42,6 +43,12 @@ public record PublicSaleRequestDTO(
         @NotBlank(message = "La dirección es obligatoria")
         @Size(max = 255, message = "La dirección no debe superar los 255 caracteres")
         String address,
+
+        // El pago se procesa (por ahora, simulado) en el checkout de la
+        // Tienda antes de registrar la venta, por eso ya llega confirmado
+        // con el metodo usado en vez de quedar PENDING para el admin.
+        @NotNull(message = "El método de pago es obligatorio")
+        PaymentMethod paymentMethod,
 
         @NotEmpty(message = "Debes agregar al menos un producto")
         @Valid

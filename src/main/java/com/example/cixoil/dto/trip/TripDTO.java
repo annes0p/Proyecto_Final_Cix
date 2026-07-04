@@ -16,6 +16,7 @@ public record TripDTO(
         LocalTime endTime,
         ProgressStatus progressStatus,
         Integer status,
-        String observation
+        String observation,
+        Integer deliveryRating
 ) {
 }
