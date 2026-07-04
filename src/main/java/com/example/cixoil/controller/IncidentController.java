@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.cixoil.dto.incident.IncidentRatingSaveDTO;
 import com.example.cixoil.dto.incident.IncidentResolveRequestDTO;
 import com.example.cixoil.dto.incident.IncidentSaveDTO;
 import com.example.cixoil.service.IncidentService;
 import com.example.cixoil.utils.ResponseUtil;
+
+import java.util.Map;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -118,6 +121,41 @@ public class IncidentController {
         return ResponseUtil.ok(
                 "El incidente ha avanzado al siguiente estado correctamente",
                 incidentService.next(id)
+        );
+    }
+
+    /**
+     * Autenticado: el vendedor pide el link para mandarselo al cliente
+     * por WhatsApp y que califique como se resolvio su incidencia.
+     */
+    @GetMapping("/{id}/rating-link")
+    public ResponseEntity<?> generarLinkCalificacion(@PathVariable Long id) {
+        String token = incidentService.generarTokenCalificacion(id);
+        return ResponseUtil.ok("Token de calificación generado", Map.of("token", token));
+    }
+
+    /**
+     * Publico: el cliente abre el link y ve que se resolvio, sin login.
+     */
+    @GetMapping("/public/{token}/rating")
+    public ResponseEntity<?> verParaCalificar(@PathVariable String token) {
+        return ResponseUtil.ok(
+                "Incidente encontrado",
+                incidentService.buscarParaCalificar(token)
+        );
+    }
+
+    /**
+     * Publico: el cliente envia su calificacion (1 a 5), sin login.
+     */
+    @PatchMapping("/public/{token}/rating")
+    public ResponseEntity<?> calificar(
+            @PathVariable String token,
+            @Valid @RequestBody IncidentRatingSaveDTO dto
+    ) {
+        return ResponseUtil.ok(
+                "Gracias por tu calificación",
+                incidentService.calificar(token, dto)
         );
     }
 }

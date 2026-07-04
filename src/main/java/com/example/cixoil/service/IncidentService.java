@@ -1,32 +1,41 @@
 package com.example.cixoil.service;
 
 import com.example.cixoil.dto.incident.IncidentDTO;
+import com.example.cixoil.dto.incident.IncidentRatingSaveDTO;
 import com.example.cixoil.dto.incident.IncidentResolveRequestDTO;
 import com.example.cixoil.dto.incident.IncidentSaveDTO;
+import com.example.cixoil.dto.incident.PublicIncidentRatingDTO;
 import com.example.cixoil.enums.IncidentStatus;
 import com.example.cixoil.exception.BusinessException;
+import com.example.cixoil.exception.InvalidArgumentException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.IncidentMapper;
 import com.example.cixoil.model.Incident;
 import com.example.cixoil.model.IncidentCategory;
 import com.example.cixoil.model.IncidentType;
 import com.example.cixoil.repository.IncidentRepository;
+import com.example.cixoil.utils.IncidentTokenUtil;
 import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class IncidentService {
 
+    private static final ZoneId ZONA_PERU = ZoneId.of("America/Lima");
+
     private final IncidentRepository incidentRepository;
     private final IncidentMapper incidentMapper;
 
     private final IncidentTypeService incidentTypeService;
     private final IncidentCategoryService incidentCategoryService;
+    private final IncidentTokenUtil incidentTokenUtil;
 
     @Transactional(readOnly = true)
     public List<IncidentDTO> listAll() {
@@ -126,6 +135,7 @@ public class IncidentService {
 
         incident.setIncidentStatus(IncidentStatus.RESOLVED);
         incident.setResolutionNote(dto.resolutionNote());
+        incident.setResolvedAt(LocalDateTime.now(ZONA_PERU));
 
         return incidentMapper.toDTO(incidentRepository.save(incident));
     }
@@ -168,6 +178,55 @@ public class IncidentService {
         Incident incident = requireIncidentById(id, "No se encontró incidente");
         incident.setIncidentStatus(incident.getIncidentStatus().next());
         return incidentMapper.toDTO(incidentRepository.save(incident));
+    }
+
+    // Calificacion del cliente
+
+    @Transactional(readOnly = true)
+    public String generarTokenCalificacion(Long id) {
+        requireIncidentById(id, "No se encontró incidente");
+        return incidentTokenUtil.generate(id);
+    }
+
+    @Transactional(readOnly = true)
+    public PublicIncidentRatingDTO buscarParaCalificar(String token) {
+        Long id = incidentTokenUtil.verificarYExtraerIncidentId(token);
+        if (id == null) {
+            throw new InvalidArgumentException("Enlace de calificación inválido");
+        }
+
+        Incident incident = requireIncidentById(id, "No se encontró incidente");
+
+        return new PublicIncidentRatingDTO(
+                incident.getId(),
+                incident.getTitle(),
+                incident.getResolutionNote(),
+                incident.getRating()
+        );
+    }
+
+    @Transactional
+    public PublicIncidentRatingDTO calificar(String token, IncidentRatingSaveDTO dto) {
+        Long id = incidentTokenUtil.verificarYExtraerIncidentId(token);
+        if (id == null) {
+            throw new InvalidArgumentException("Enlace de calificación inválido");
+        }
+
+        Incident incident = requireIncidentById(id, "No se encontró incidente");
+
+        if (incident.getIncidentStatus() != IncidentStatus.RESOLVED
+                && incident.getIncidentStatus() != IncidentStatus.CLOSED)
+            throw new BusinessException("Solo se puede calificar un incidente ya resuelto");
+
+        incident.setRating(dto.rating());
+        incidentRepository.save(incident);
+
+        return new PublicIncidentRatingDTO(
+                incident.getId(),
+                incident.getTitle(),
+                incident.getResolutionNote(),
+                incident.getRating()
+        );
     }
 
     // Require

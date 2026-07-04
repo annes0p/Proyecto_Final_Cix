@@ -5,6 +5,8 @@ import com.example.cixoil.enums.Priority;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -54,4 +56,10 @@ public class Incident extends AuditableEntity{
 
     @Column(name = "resolution_note", length = 500)
     private String resolutionNote;
+
+    @Column(name = "resolved_at")
+    private LocalDateTime resolvedAt;
+
+    @Column(name = "rating")
+    private Integer rating;
 }

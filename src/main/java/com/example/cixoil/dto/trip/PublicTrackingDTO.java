@@ -13,6 +13,9 @@ public record PublicTrackingDTO(
         String progressStatus,
         String startTime,
         String endTime,
-        String clienteNombre
+        String clienteNombre,
+        Double latitude,
+        Double longitude,
+        String ubicacionActualizada
 ) {
 }

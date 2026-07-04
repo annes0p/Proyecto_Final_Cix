@@ -5,6 +5,8 @@ import com.example.cixoil.dto.incidenttype.IncidentTypeRefDTO;
 import com.example.cixoil.enums.IncidentStatus;
 import com.example.cixoil.enums.Priority;
 
+import java.time.LocalDateTime;
+
 public record IncidentDTO(
         Long id,
         String title,
@@ -16,6 +18,9 @@ public record IncidentDTO(
         String reference,
         IncidentStatus incidentStatus,
         String fullTitle,
-        String resolutionNote
+        String resolutionNote,
+        LocalDateTime createdAt,
+        LocalDateTime resolvedAt,
+        Integer rating
 ) {
 }
