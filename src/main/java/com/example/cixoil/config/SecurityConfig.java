@@ -38,6 +38,8 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.GET, "/api/tracking/public/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/incidents/public/**").permitAll()
             .requestMatchers(HttpMethod.PATCH, "/api/incidents/public/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/public/**").permitAll()
             .anyRequest().authenticated())
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
