@@ -10,4 +10,5 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
 
     List<Incident> findByIncidentStatusNot(IncidentStatus status);
     List<Incident> findByIncidentStatus(IncidentStatus status);
+    List<Incident> findByClient_DocNumberOrderByIdDesc(String docNumber);
 }

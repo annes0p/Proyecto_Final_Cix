@@ -16,4 +16,6 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
 
     List<Trip> findByRoute_IdAndStatusNot(Long idRoute, Integer status);
 
+    List<Trip> findBySale_Client_DocNumberOrderByIdDesc(String docNumber);
+
 }

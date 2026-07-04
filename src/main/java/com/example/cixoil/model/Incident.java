@@ -62,4 +62,13 @@ public class Incident extends AuditableEntity{
 
     @Column(name = "rating")
     private Integer rating;
+
+    // Cliente al que pertenece esta incidencia (nullable: solo se llena
+    // cuando la incidencia la reporta el propio cliente desde el portal
+    // publico, o cuando el vendedor la vincula a un cliente puntual).
+    // Permite armar la seccion "Mis incidencias" del portal del cliente
+    // sin depender de parsear el texto libre de "reference".
+    @JoinColumn(name = "id_client")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Client client;
 }
