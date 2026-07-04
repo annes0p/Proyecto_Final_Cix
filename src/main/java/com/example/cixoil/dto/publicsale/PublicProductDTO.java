@@ -10,6 +10,7 @@ public record PublicProductDTO(
         BigDecimal price,
         String viscosity,
         String description,
-        String imageUrl
+        String imageUrl,
+        Long stock
 ) {
 }

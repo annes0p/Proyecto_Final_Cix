@@ -19,9 +19,11 @@ import com.example.cixoil.enums.Status;
 import com.example.cixoil.enums.TransactionStatus;
 import com.example.cixoil.enums.VoucherType;
 import com.example.cixoil.model.Client;
+import com.example.cixoil.model.Inventory;
 import com.example.cixoil.model.Product;
 import com.example.cixoil.model.Sale;
 import com.example.cixoil.model.SaleDetail;
+import com.example.cixoil.repository.InventoryRepository;
 import com.example.cixoil.repository.ProductRepository;
 import com.example.cixoil.repository.SaleRepository;
 
@@ -48,6 +50,7 @@ public class PublicSaleService {
     private final SaleDetailService saleDetailService;
     private final SaleRepository saleRepository;
     private final StockMovementService stockMovementService;
+    private final InventoryRepository inventoryRepository;
 
     @Transactional(readOnly = true)
     public List<PublicProductDTO> getCatalogo() {
@@ -119,6 +122,9 @@ public class PublicSaleService {
     }
 
     private PublicProductDTO toPublicProductDTO(Product p) {
+        Long stock = inventoryRepository.findByProduct_Id(p.getId())
+                .map(Inventory::getStock)
+                .orElse(0L);
         return new PublicProductDTO(
                 p.getId(),
                 p.getName(),
@@ -127,7 +133,8 @@ public class PublicSaleService {
                 p.getPrice(),
                 p.getViscosity(),
                 p.getDescription(),
-                p.getImageUrl()
+                p.getImageUrl(),
+                stock
         );
     }
 
