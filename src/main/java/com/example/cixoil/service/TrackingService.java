@@ -64,6 +64,12 @@ public class TrackingService {
         Trip trip = requireTrip(idTrip);
         TripLocation ubicacion = tripLocationRepository.findById(idTrip).orElse(null);
 
+        String startDateTime = null;
+        if (trip.getRoute() != null && trip.getRoute().getRouteDate() != null && trip.getStartTime() != null) {
+            startDateTime = LocalDateTime.of(trip.getRoute().getRouteDate(), trip.getStartTime())
+                    .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        }
+
         return new PublicTrackingDTO(
                 trip.getId(),
                 trip.getRoute() != null && trip.getRoute().getRouteDate() != null
@@ -82,7 +88,12 @@ public class TrackingService {
                 ubicacion != null && ubicacion.getUpdatedAt() != null
                         ? ubicacion.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                         : null,
-                trip.getDeliveryRating()
+                trip.getDeliveryRating(),
+                trip.getOrigin() != null ? trip.getOrigin().getLatitude() : null,
+                trip.getOrigin() != null ? trip.getOrigin().getLongitude() : null,
+                trip.getDestination() != null ? trip.getDestination().getLatitude() : null,
+                trip.getDestination() != null ? trip.getDestination().getLongitude() : null,
+                startDateTime
         );
     }
 

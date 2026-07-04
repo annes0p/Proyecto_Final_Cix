@@ -17,6 +17,11 @@ public record PublicTrackingDTO(
         Double latitude,
         Double longitude,
         String ubicacionActualizada,
-        Integer deliveryRating
+        Integer deliveryRating,
+        Double originLatitude,
+        Double originLongitude,
+        Double destinationLatitude,
+        Double destinationLongitude,
+        String startDateTime
 ) {
 }
