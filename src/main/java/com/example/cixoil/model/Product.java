@@ -58,9 +58,13 @@ public class Product extends AuditableEntity {
                 Id: %d
                 Nombre: %s
                 Marca: %s
+                Categoria: %s
                 Precio: %s
                 Viscosidad: %s
+                Descripcion/uso recomendado: %s
                 """.formatted(id, name, brand.getName(),
-                price.toPlainString(), viscosity);
+                category != null ? category.getName() : "Sin categoría",
+                price.toPlainString(), viscosity,
+                description != null && !description.isBlank() ? description : "Sin descripción");
     }
 }
