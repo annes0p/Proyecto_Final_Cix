@@ -1,6 +1,8 @@
 package com.example.cixoil.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -12,6 +14,7 @@ import com.example.cixoil.dto.client.ClientSaveDTO;
 import com.example.cixoil.dto.publicsale.PublicProductDTO;
 import com.example.cixoil.dto.publicsale.PublicSaleRequestDTO;
 import com.example.cixoil.dto.publicsale.PublicSaleResponseDTO;
+import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.enums.TransactionStatus;
 import com.example.cixoil.enums.VoucherType;
@@ -44,6 +47,7 @@ public class PublicSaleService {
     private final ClientService clientService;
     private final SaleDetailService saleDetailService;
     private final SaleRepository saleRepository;
+    private final StockMovementService stockMovementService;
 
     @Transactional(readOnly = true)
     public List<PublicProductDTO> getCatalogo() {
@@ -53,6 +57,8 @@ public class PublicSaleService {
                 .map(this::toPublicProductDTO)
                 .toList();
     }
+
+    private static final ZoneId ZONA_PERU = ZoneId.of("America/Lima");
 
     @Transactional
     public PublicSaleResponseDTO crearVentaPublica(PublicSaleRequestDTO dto) {
@@ -79,6 +85,14 @@ public class PublicSaleService {
         details.forEach(created::addDetail);
 
         saleRepository.save(created);
+
+        // Igual que una venta interna: descuenta stock real. Si algun
+        // producto no tiene suficiente, StockMovementService.create()
+        // lanza BusinessException y, al estar todo en la misma
+        // transaccion, la venta tampoco se llega a guardar.
+        List<StockMovementSaveDTO> movimientos = stockMovementService.generateSaleMovements(
+                details, LocalDateTime.now(ZONA_PERU));
+        stockMovementService.saveAll(movimientos);
 
         return new PublicSaleResponseDTO(
                 created.getId(),
