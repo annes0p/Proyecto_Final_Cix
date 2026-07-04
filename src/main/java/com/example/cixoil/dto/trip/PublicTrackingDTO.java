@@ -16,6 +16,7 @@ public record PublicTrackingDTO(
         String clienteNombre,
         Double latitude,
         Double longitude,
-        String ubicacionActualizada
+        String ubicacionActualizada,
+        Integer deliveryRating
 ) {
 }

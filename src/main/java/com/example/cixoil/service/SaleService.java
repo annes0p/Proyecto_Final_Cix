@@ -3,6 +3,7 @@ package com.example.cixoil.service;
 import com.example.cixoil.dto.sale.SaleDTO;
 import com.example.cixoil.dto.sale.SaleSaveDTO;
 import com.example.cixoil.dto.stockmovement.StockMovementSaveDTO;
+import com.example.cixoil.enums.PaymentMethod;
 import com.example.cixoil.enums.TransactionStatus;
 import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.ResourceNotFoundException;
@@ -98,6 +99,27 @@ public class SaleService {
         stockMovementService.saveAll(movements);
 
         return saleMapper.toDTO(created);
+    }
+
+    /**
+     * Confirma el pago de una venta pendiente (por ejemplo, un pedido
+     * creado desde el portal publico). Solo cambia el estado y el metodo
+     * de pago; no toca stock ni series de documentos, eso ya se hace en
+     * create(). Punto de enganche para cuando se conecte una pasarela real
+     * (Culqi): el metodo de pago pasara a confirmarse automaticamente via
+     * webhook en vez de manualmente por el admin.
+     */
+    @Transactional
+    public SaleDTO confirmarPago(Long id, PaymentMethod metodoPago) {
+        Sale sale = requireSaleById(id, "Venta no encontrada");
+
+        if (sale.getTransactionStatus() != TransactionStatus.PENDING)
+            throw new BusinessException("Solo se puede confirmar el pago de una venta pendiente");
+
+        sale.setTransactionStatus(TransactionStatus.COMPLETED);
+        if (metodoPago != null) sale.setPaymentMethod(metodoPago);
+
+        return saleMapper.toDTO(saleRepository.save(sale));
     }
 
     @Transactional

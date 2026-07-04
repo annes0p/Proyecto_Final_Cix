@@ -1,6 +1,8 @@
 package com.example.cixoil.service;
 
 import com.example.cixoil.dto.trip.PublicTrackingDTO;
+import com.example.cixoil.enums.ProgressStatus;
+import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.InvalidArgumentException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.model.Trip;
@@ -79,8 +81,33 @@ public class TrackingService {
                 ubicacion != null ? ubicacion.getLongitude() : null,
                 ubicacion != null && ubicacion.getUpdatedAt() != null
                         ? ubicacion.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                        : null
+                        : null,
+                trip.getDeliveryRating()
         );
+    }
+
+    /**
+     * Calificacion de 1 a 5 de como llego la entrega, distinta de la
+     * calificacion de incidencias (Incident.rating). Solo se puede calificar
+     * un viaje ya completado (entregado), usando el mismo token publico de
+     * seguimiento (no se crea un token ni pagina nueva).
+     */
+    @Transactional
+    public PublicTrackingDTO calificarEntrega(String token, Integer rating) {
+        Long idTrip = trackingTokenUtil.verificarYExtraerTripId(token);
+        if (idTrip == null) {
+            throw new InvalidArgumentException("Enlace de seguimiento inválido");
+        }
+
+        Trip trip = requireTrip(idTrip);
+
+        if (trip.getProgressStatus() != ProgressStatus.COMPLETED)
+            throw new BusinessException("Solo se puede calificar un pedido ya entregado");
+
+        trip.setDeliveryRating(rating);
+        tripRepository.save(trip);
+
+        return buscarPorToken(token);
     }
 
     private Trip requireTrip(Long id) {

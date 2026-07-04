@@ -2,6 +2,7 @@ package com.example.cixoil.controller;
 
 import com.example.cixoil.dto.trip.PublicTrackingDTO;
 import com.example.cixoil.dto.trip.TripLocationSaveDTO;
+import com.example.cixoil.dto.trip.TripRatingSaveDTO;
 import com.example.cixoil.service.TrackingService;
 import com.example.cixoil.utils.ResponseUtil;
 import jakarta.validation.Valid;
@@ -54,5 +55,19 @@ public class TrackingController {
     ) {
         trackingService.actualizarUbicacion(idTrip, dto.latitude(), dto.longitude());
         return ResponseUtil.ok("Ubicación actualizada correctamente");
+    }
+
+    /**
+     * Publico: el cliente califica como llego su entrega (1 a 5), sin login,
+     * usando el mismo token de seguimiento. Solo funciona si el viaje ya
+     * esta COMPLETED.
+     */
+    @PatchMapping("/public/{token}/rating")
+    public ResponseEntity<?> calificarEntrega(
+            @PathVariable String token,
+            @Valid @RequestBody TripRatingSaveDTO dto
+    ) {
+        PublicTrackingDTO data = trackingService.calificarEntrega(token, dto.rating());
+        return ResponseUtil.ok("Gracias por calificar tu entrega", data);
     }
 }

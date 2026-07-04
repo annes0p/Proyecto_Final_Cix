@@ -53,4 +53,10 @@ public class Trip {
 
     @Column(name = "observation", length = 500)
     private String observation;
+
+    // Calificacion de 1 a 5 que el cliente le da a como llego su entrega,
+    // distinta de la calificacion de resolucion de incidencias (Incident.rating).
+    // Solo se puede llenar cuando el viaje ya esta COMPLETED.
+    @Column(name = "delivery_rating")
+    private Integer deliveryRating;
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cixoil.dto.sale.SaleDTO;
+import com.example.cixoil.dto.sale.SalePaymentConfirmDTO;
 import com.example.cixoil.dto.sale.SaleSaveDTO;
 import com.example.cixoil.service.SaleService;
 import com.example.cixoil.utils.ResponseUtil;
@@ -48,5 +49,18 @@ public class SaleController {
     public ResponseEntity<?> cancel(@PathVariable Long id) {
         SaleDTO canceled = saleService.cancel(id);
         return ResponseUtil.ok("Venta cancelada", canceled);
+    }
+
+    /**
+     * Confirma el pago de una venta pendiente (por ejemplo, un pedido del
+     * portal publico). Paso previo antes de crear el envio/ruta.
+     */
+    @PatchMapping("/{id}/confirm-payment")
+    public ResponseEntity<?> confirmarPago(
+            @PathVariable Long id,
+            @Valid @RequestBody SalePaymentConfirmDTO dto
+    ) {
+        SaleDTO confirmada = saleService.confirmarPago(id, dto.paymentMethod());
+        return ResponseUtil.ok("Pago confirmado correctamente", confirmada);
     }
 }
