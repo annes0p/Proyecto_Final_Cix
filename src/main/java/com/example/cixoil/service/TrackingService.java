@@ -1,13 +1,17 @@
 package com.example.cixoil.service;
 
 import com.example.cixoil.dto.trip.PublicTrackingDTO;
+import com.example.cixoil.dto.trip.TripMessageDTO;
+import com.example.cixoil.enums.MessageSender;
 import com.example.cixoil.enums.ProgressStatus;
 import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.InvalidArgumentException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.model.Trip;
 import com.example.cixoil.model.TripLocation;
+import com.example.cixoil.model.TripMessage;
 import com.example.cixoil.repository.TripLocationRepository;
+import com.example.cixoil.repository.TripMessageRepository;
 import com.example.cixoil.repository.TripRepository;
 import com.example.cixoil.utils.TrackingTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Servicio nuevo e independiente de TripService, pensado para no cruzarse
@@ -32,6 +37,7 @@ public class TrackingService {
 
     private final TripRepository tripRepository;
     private final TripLocationRepository tripLocationRepository;
+    private final TripMessageRepository tripMessageRepository;
     private final TrackingTokenUtil trackingTokenUtil;
 
     @Transactional(readOnly = true)
@@ -119,6 +125,75 @@ public class TrackingService {
         tripRepository.save(trip);
 
         return buscarPorToken(token);
+    }
+
+    // Chat (no chatbot) entre cliente y personal sobre un envio puntual.
+    // El cliente entra con el mismo token publico de seguimiento; el
+    // personal entra autenticado desde el detalle de la ruta (Trip).
+
+    @Transactional(readOnly = true)
+    public List<TripMessageDTO> listarMensajesPorToken(String token) {
+        Long idTrip = trackingTokenUtil.verificarYExtraerTripId(token);
+        if (idTrip == null) {
+            throw new InvalidArgumentException("Enlace de seguimiento inválido");
+        }
+        requireTrip(idTrip);
+        return tripMessageRepository.findByIdTripOrderByCreatedAtAsc(idTrip)
+                .stream().map(this::toMessageDTO).toList();
+    }
+
+    @Transactional
+    public TripMessageDTO enviarMensajeCliente(String token, String content) {
+        Long idTrip = trackingTokenUtil.verificarYExtraerTripId(token);
+        if (idTrip == null) {
+            throw new InvalidArgumentException("Enlace de seguimiento inválido");
+        }
+        Trip trip = requireTrip(idTrip);
+        String nombreCliente = trip.getSale() != null && trip.getSale().getClient() != null
+                ? trip.getSale().getClient().getName()
+                : "Cliente";
+
+        TripMessage mensaje = TripMessage.builder()
+                .idTrip(idTrip)
+                .sender(MessageSender.CLIENT)
+                .senderName(nombreCliente)
+                .content(content)
+                .build();
+
+        return toMessageDTO(tripMessageRepository.save(mensaje));
+    }
+
+    @Transactional(readOnly = true)
+    public List<TripMessageDTO> listarMensajesPorTripId(Long idTrip) {
+        requireTrip(idTrip);
+        return tripMessageRepository.findByIdTripOrderByCreatedAtAsc(idTrip)
+                .stream().map(this::toMessageDTO).toList();
+    }
+
+    @Transactional
+    public TripMessageDTO enviarMensajeStaff(Long idTrip, String content, String nombreStaff) {
+        requireTrip(idTrip);
+
+        TripMessage mensaje = TripMessage.builder()
+                .idTrip(idTrip)
+                .sender(MessageSender.STAFF)
+                .senderName(nombreStaff != null && !nombreStaff.isBlank() ? nombreStaff : "CIXOIL")
+                .content(content)
+                .build();
+
+        return toMessageDTO(tripMessageRepository.save(mensaje));
+    }
+
+    private TripMessageDTO toMessageDTO(TripMessage m) {
+        return new TripMessageDTO(
+                m.getId(),
+                m.getSender() != null ? m.getSender().name() : null,
+                m.getSenderName(),
+                m.getContent(),
+                m.getCreatedAt() != null
+                        ? m.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                        : null
+        );
     }
 
     private Trip requireTrip(Long id) {

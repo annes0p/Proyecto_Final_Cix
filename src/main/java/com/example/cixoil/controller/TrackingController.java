@@ -1,20 +1,26 @@
 package com.example.cixoil.controller;
 
+import com.example.cixoil.dto.auth.AuthUserDTO;
 import com.example.cixoil.dto.trip.PublicTrackingDTO;
 import com.example.cixoil.dto.trip.TripLocationSaveDTO;
+import com.example.cixoil.dto.trip.TripMessageDTO;
+import com.example.cixoil.dto.trip.TripMessageSaveDTO;
 import com.example.cixoil.dto.trip.TripRatingSaveDTO;
 import com.example.cixoil.service.TrackingService;
 import com.example.cixoil.utils.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -69,5 +75,45 @@ public class TrackingController {
     ) {
         PublicTrackingDTO data = trackingService.calificarEntrega(token, dto.rating());
         return ResponseUtil.ok("Gracias por calificar tu entrega", data);
+    }
+
+    /**
+     * Chat (no chatbot) entre cliente y personal sobre un envio puntual.
+     * Lado publico: el cliente lee y escribe usando el mismo token de
+     * seguimiento, sin login.
+     */
+    @GetMapping("/public/{token}/messages")
+    public ResponseEntity<?> listarMensajesPublico(@PathVariable String token) {
+        List<TripMessageDTO> mensajes = trackingService.listarMensajesPorToken(token);
+        return ResponseUtil.ok("Mensajes encontrados", mensajes);
+    }
+
+    @PostMapping("/public/{token}/messages")
+    public ResponseEntity<?> enviarMensajePublico(
+            @PathVariable String token,
+            @Valid @RequestBody TripMessageSaveDTO dto
+    ) {
+        TripMessageDTO mensaje = trackingService.enviarMensajeCliente(token, dto.content());
+        return ResponseUtil.ok("Mensaje enviado", mensaje);
+    }
+
+    /**
+     * Lado personal: autenticado, responde desde el detalle de la ruta.
+     */
+    @GetMapping("/{idTrip}/messages")
+    public ResponseEntity<?> listarMensajesStaff(@PathVariable Long idTrip) {
+        List<TripMessageDTO> mensajes = trackingService.listarMensajesPorTripId(idTrip);
+        return ResponseUtil.ok("Mensajes encontrados", mensajes);
+    }
+
+    @PostMapping("/{idTrip}/messages")
+    public ResponseEntity<?> enviarMensajeStaff(
+            @PathVariable Long idTrip,
+            @Valid @RequestBody TripMessageSaveDTO dto,
+            @AuthenticationPrincipal AuthUserDTO authUserDTO
+    ) {
+        TripMessageDTO mensaje = trackingService.enviarMensajeStaff(
+                idTrip, dto.content(), authUserDTO != null ? authUserDTO.username() : null);
+        return ResponseUtil.ok("Mensaje enviado", mensaje);
     }
 }
