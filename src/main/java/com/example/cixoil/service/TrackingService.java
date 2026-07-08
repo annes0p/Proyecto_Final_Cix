@@ -149,6 +149,10 @@ public class TrackingService {
             throw new InvalidArgumentException("Enlace de seguimiento inválido");
         }
         Trip trip = requireTrip(idTrip);
+
+        if (trip.getDeliveryRating() != null)
+            throw new BusinessException("La conversación quedó cerrada después de la calificación");
+
         String nombreCliente = trip.getSale() != null && trip.getSale().getClient() != null
                 ? trip.getSale().getClient().getName()
                 : "Cliente";
@@ -172,7 +176,10 @@ public class TrackingService {
 
     @Transactional
     public TripMessageDTO enviarMensajeStaff(Long idTrip, String content, String nombreStaff) {
-        requireTrip(idTrip);
+        Trip trip = requireTrip(idTrip);
+
+        if (trip.getDeliveryRating() != null)
+            throw new BusinessException("La conversación quedó cerrada después de la calificación");
 
         TripMessage mensaje = TripMessage.builder()
                 .idTrip(idTrip)
