@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cixoil.dto.product.ProductDTO;
 import com.example.cixoil.dto.supplier.SupplierDTO;
+import com.example.cixoil.dto.supplier.SupplierProductsSaveDTO;
 import com.example.cixoil.dto.supplier.SupplierSaveDTO;
 import com.example.cixoil.enums.Status;
 import com.example.cixoil.service.SupplierService;
@@ -45,6 +46,15 @@ public class SupplierController {
     public ResponseEntity<?> findProducts(@PathVariable Long id) {
         List<ProductDTO> data = supplierService.listSupplierProducts(id);
         return ResponseUtil.ok("Productos del proveedor obtenidos correctamente", data);
+    }
+
+    @PutMapping("/{id}/products")
+    public ResponseEntity<?> updateProducts(
+            @PathVariable Long id,
+            @Valid @RequestBody SupplierProductsSaveDTO dto
+    ) {
+        List<ProductDTO> data = supplierService.updateProducts(id, dto.productIds());
+        return ResponseUtil.ok("Productos del proveedor actualizados correctamente", data);
     }
 
     @PostMapping

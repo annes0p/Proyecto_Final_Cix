@@ -9,7 +9,9 @@ import com.example.cixoil.exception.BusinessException;
 import com.example.cixoil.exception.ResourceNotFoundException;
 import com.example.cixoil.mapper.ProductMapper;
 import com.example.cixoil.mapper.SupplierMapper;
+import com.example.cixoil.model.Product;
 import com.example.cixoil.model.Supplier;
+import com.example.cixoil.repository.ProductRepository;
 import com.example.cixoil.repository.SupplierRepository;
 import com.example.cixoil.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class SupplierService {
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;
     private final ProductMapper productMapper;
+    private final ProductRepository productRepository;
 
     @Transactional(readOnly = true)
     public List<SupplierDTO> findNotDeleted() {
@@ -87,6 +90,25 @@ public class SupplierService {
         );
 
         return supplierMapper.toDTO(supplierRepository.save(existent));
+    }
+
+    /**
+     * Reemplaza la lista completa de productos que ofrece este proveedor.
+     * Se usa desde la pantalla de Proveedores (checklist), no desde
+     * Productos, para no duplicar la gestion en dos pantallas.
+     */
+    @Transactional
+    public List<ProductDTO> updateProducts(Long id, List<Long> productIds) {
+        Supplier existent = requireSupplierById(id, "Proveedor no encontrado");
+
+        List<Product> productos = productIds == null || productIds.isEmpty()
+                ? List.of()
+                : productRepository.findAllById(productIds);
+
+        existent.setProducts(productos);
+        supplierRepository.save(existent);
+
+        return productos.stream().map(productMapper::toDTO).toList();
     }
 
     @Transactional
